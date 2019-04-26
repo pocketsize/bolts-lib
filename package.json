@@ -1,0 +1,41 @@
+{
+	"name": "bolts-lib",
+	"version": "1.0.0",
+	"description": "Front-end helper toolkit",
+	"main": "src/js/index.js",
+	"author": "Pocketsize <dev@pocketsize.se> (https://www.pocketsize.se)",
+	"homepage": "https://www.pocketsize.se",
+	"license": "MIT",
+	"keywords": [
+		"bolts",
+		"sass",
+		"scss",
+		"js",
+		"javascript",
+		"es6",
+		"front-end",
+		"helper",
+		"toolkit"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pocketsize/bolts-lib.git"
+	},
+	"bugs": {
+		"url": "https://github.com/pocketsize/bolts-lib/issues"
+	},
+	"contributors": [{
+		"name": "André Ekeberg",
+		"email": "andre@pocketsize.se",
+		"url": "https://github.com/andreekeberg"
+	}, {
+		"name": "Björn Petersson",
+		"email": "bjorn@pocketsize.se",
+		"url": "https://github.com/djurnamn"
+	}, {
+		"name": "Konstantin Ivanov",
+		"email": "konstantin@pocketsize.se",
+		"url": "https://github.com/mrtamagotchi"
+	}],
+	"dependencies": {}
+}

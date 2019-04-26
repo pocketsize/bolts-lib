@@ -1,0 +1,1420 @@
+/**
+ * Bolts 1.0.0 | MIT License
+ *
+ * Developed by Pocketsize
+ * http://www.pocketsize.se/
+ */
+
+/***************************
+ * Configuration variables *
+ ***************************/
+
+$bolts-reset-focus-styles:                     false !default;
+$bolts-reset-list-styles:                      false !default;
+$bolts-reset-legacy-element-styles:            false !default;
+
+$bolts-default-sticky-footer-wrapper-selector: false !default;
+$bolts-default-sticky-footer-footer-selector:  false !default;
+
+$bolts-default-pseudo:                         false !default;
+
+$bolts-default-font-path:                      false !default;
+
+$bolts-default-container-width:                false !default;
+$bolts-default-container-max-width:            false !default;
+$bolts-default-container-align:                false !default;
+
+$bolts-default-table-layout-gutters:           false !default;
+
+$bolts-default-inline-layout-gutters:          false !default;
+$bolts-default-inline-layout-align:            false !default;
+
+$bolts-default-flex-layout-gutters:            false !default;
+$bolts-default-flex-layout-align:              false !default;
+
+$bolts-default-background-image:               false !default;
+$bolts-default-background-size:                false !default;
+$bolts-default-background-position:            false !default;
+$bolts-default-background-repeat:              false !default;
+$bolts-default-background-attachment:          false !default;
+$bolts-default-background-color:               false !default;
+
+$bolts-default-transition-property:            false !default;
+$bolts-default-transition-duration:            false !default;
+$bolts-default-transition-easing:              false !default;
+$bolts-default-transition-delay:               false !default;
+$bolts-default-transition-queue:               false !default;
+$bolts-default-transition-queue-property:      false !default;
+$bolts-default-transition-queue-duration:      false !default;
+$bolts-default-transition-queue-easing:        false !default;
+
+$bolts-default-auto-col-min:                   false !default;
+$bolts-default-auto-col-max:                   false !default;
+
+$bolts-default-responsive-font-size-ratio:     false !default;
+
+$bolts-breakpoints:                            false !default;
+$bolts-selectors:                              false !default;
+
+/******************************
+ * Internal utility functions *
+ ******************************/
+
+@function _contains($list, $item) { @return index($list, $item) != null; }
+
+@function _implode($list, $separator: ', ') {
+	$imploded: '';
+
+	@each $item in $list {
+		@if ($item == nth($list, length($list)) or (length($list) == 1)) { $separator: ''; }
+		$imploded: $imploded + $item + $separator;
+	}
+
+	@return $imploded;
+}
+
+@function _get-pseudo($pseudo) {
+	@if ($pseudo == false and $bolts-default-pseudo != false) { $pseudo: $bolts-default-pseudo; }
+
+	@if ($pseudo == false) { $pseudo: '&::after'; }
+	@else if (_contains(('after', ':after', '::after', '&:after', '&::after'), $pseudo)) { $pseudo: '&::after'; }
+	@else if (_contains(('before', ':before', '::before', '&:before', '&::before'), $pseudo)) { $pseudo: '&::before'; }
+
+	@return $pseudo;
+}
+
+@function _is-pseudo($pseudo) {
+	@return ($pseudo == '&::after' or $pseudo == '&::before');
+}
+
+@function _format-transition($property: false, $duration: false, $easing: false, $delay: false) {
+	$transition: none;
+
+	@if ($property != false) {
+		@if ($duration == false) { $duration: 0s; }
+		@if ($easing   == false) { $easing:   linear; }
+		@if ($delay    == false) { $delay:    0s; }
+		$transition: inspect($property $duration $easing);
+		@if (($delay / ($delay * 0 + 1)) != 0) { $transition: $transition + ' ' + $delay; }
+	}
+	@return $transition;
+}
+
+@function _format-gutters($value, $direction) {
+	$vertical-gutter: false;
+	$horizontal-gutter: false;
+
+	@if (type-of($value) == list) {
+		@if (nth($value, 1)) { $vertical-gutter:   (nth($value, 1)); }
+		@if (nth($value, 2)) { $horizontal-gutter: (nth($value, 2)); }
+	} @else {
+		$vertical-gutter:   $value;
+		$horizontal-gutter: $value;
+	}
+
+	@if ($direction == vertical) {
+		@return $vertical-gutter;
+	} @else {
+		@return $horizontal-gutter;
+	}
+}
+
+
+/********************************
+ * Media query helper functions *
+ ********************************/
+
+/**
+ * breakpoint()
+ * 
+ * Helper function for writing cleaner responsive media queries
+ *
+ * @param {number} $from - CSS length unit required
+ * @param {number} $to - CSS length unit required
+ * @param {string} $property - "height" or "width"
+ */
+@function breakpoint(
+	$from:     false,
+	$to:       false,
+	$property: false
+) {
+	@if ($bolts-breakpoints == false) { $bolts-breakpoints: (); }
+	@if ($property != height) { $property: width; }
+	@if (map-get($bolts-breakpoints, $from)) { $from: map-get($bolts-breakpoints, $from) }
+	@if (map-get($bolts-breakpoints, $to))   { $to:   map-get($bolts-breakpoints, $to)   }
+
+	@if ($from and $to) { @return "min-" + $property + ": " + ($from + 1) + ") and (max-" + $property + ": " + $to; }
+	@if ($from) { @return "min-" + $property + ": " + ($from + 1); }
+	@if ($to) { @return "max-" + $property + ": " + $to; }
+}
+
+
+/**
+ * width() / width-to() / width-from() 
+ * 
+ * Helper functions for writing cleaner responsive media queries
+ *
+ * @param {number} $from - CSS unit mandatory
+ * @param {number} $to - CSS unit mandatory
+ */
+@function width($from: false, $to: false) {
+	@return breakpoint($from, $to);
+}
+
+@function width-from($from) {
+	@return breakpoint($from);
+}
+
+@function width-to($to) {
+	@return breakpoint(false, $to);
+}
+
+
+/**
+ * height() / height-to() / height-from() 
+ * 
+ * Helper functions for writing cleaner responsive media queries
+ *
+ * @param {number} $from - CSS unit mandatory
+ * @param {number} $to - CSS unit mandatory
+ */
+@function height($from: false, $to: false) {
+	@return breakpoint($to, $from, height);
+}
+
+@function height-from($from) {
+	@return breakpoint($from, false, height);
+}
+
+@function height-to($to) {
+	@return breakpoint(false, $to, height);
+}
+
+
+/**
+ * retina() 
+ * 
+ * Helper function for writing media queries for retina screens
+ *
+ * @param {number} $min-pixel-ratio
+ */
+@function retina($min-pixel-ratio: 2) {
+	@return "min-device-pixel-ratio: " + $min-pixel-ratio + "), (min-resolution: " + ($min-pixel-ratio * 96) + "dpi";
+}
+
+
+/*************************
+ * Misc helper functions *
+ *************************/
+
+
+/**
+ * ease()
+ *
+ * Returns a cubic-bezier with the specified easing
+ *
+ * @param {string} $easing-name
+ *
+ * @returns {string} 
+ */
+@function ease($easing-name: false) {
+	$easings: (
+		linear:      "0.25, 0.25, 0.75, 0.75",
+		ease:        "0.25, 0.1, 0.25, 1",
+		ease-in:     "0.42, 0, 1, 1",
+		ease-out:    "0, 0, 0.58, 1",
+		ease-in-out: "0.42, 0, 0.58, 1",
+
+		inQuad:      "0.55, 0.085, 0.68, 0.53",
+		inCubic:     "0.55, 0.055, 0.675, 0.19",
+		inQuart:     "0.895, 0.03, 0.685, 0.22",
+		inQuint:     "0.755, 0.05, 0.855, 0.06",
+		inSine:      "0.47, 0, 0.745, 0.715",
+		inExpo:      "0.95, 0.05, 0.795, 0.035",
+		inCirc:      "0.6, 0.04, 0.90, 0.335",
+		inBack:      "0.6, -0.28, 0.735, 0.045",
+
+		outQuad:     "0.25, 0.46, 0.45, 0.94",
+		outCubic:    "0.215, 0.61, 0.355, 1",
+		outQuart:    "0.165, 0.84, 0.44, 1",
+		outQuint:    "0.23, 1, 0.32, 1",
+		outSine:     "0.39, 0.575, 0.565, 1",
+		outExpo:     "0.19, 1, 0.22, 1",
+		outCirc:     "0.075, 0.82, 0.165, 1",
+		outBack:     "0.175, 0.885, 0.32, 1.275",
+
+		inOutQuad:   "0.455, 0.03, 0.515, 0.955",
+		inOutCubic:  "0.645, 0.045, 0.355, 1",
+		inOutQuart:  "0.77, 0, 0.175, 1",
+		inOutQuint:  "0.86, 0, 0.07, 1",
+		inOutSine:   "0.445, 0.05, 0.55, 0.95",
+		inOutExpo:   "10, 0, 0, 1",
+		inOutCirc:   "0.785, 0.135, 0.15, 0.86",
+		inOutBack:   "0.68, -0.55, 0.265, 1.55",
+
+		bSwing:      "0.56, 0.05, 0.12, 1"
+	);
+
+	@if ($easing-name != false) {
+		@return cubic-bezier(unquote(map-get($easings, $easing-name)));
+	}
+}
+
+
+/*************************
+ * Reset and boilerplate *
+ *************************/
+
+
+/**
+ * reset
+ * 
+ * Reset styles to normalize browser differences (included in boilerplate by default)
+ */
+@mixin reset() {
+	* {
+		vertical-align: baseline;
+		font-weight: inherit;
+		font-family: inherit;
+		font-style: inherit;
+		font-size: 100%;
+		border: 0 none;
+		outline: 0;
+		padding: 0;
+		margin: 0;
+		text-decoration: none;
+
+		&, &:before, &:after {
+			box-sizing: border-box;
+			background-repeat: no-repeat;
+		}
+
+		@if ($bolts-reset-focus-styles == false) {
+			&:focus { outline: 1px solid; }
+		}
+	}
+
+	html {
+		text-size-adjust: 100%;
+		overflow: auto;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-ms-overflow-style: -ms-autohiding-scrollbar;
+	}
+
+	body {
+		font-size: 100%;
+		line-height: 1;
+	}
+
+	code, kbd, samp, pre, tt, var, textarea, input, select {
+		font: inherit;
+		font-size: 1em;
+	}
+
+	dfn, i, cite, var, address, em { font-style: normal; }
+
+	th, b, strong, h1, h2, h3, h4, h5, h6 { font-weight: normal; }
+
+	a, img, a img, iframe, form, fieldset, abbr, acronym, object, applet, table { border: none; }
+
+	table {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+
+	caption, th, td, center {
+		text-align: left;
+		vertical-align: top;
+	}
+
+	q { quotes: '' ''; }
+
+	@if ($bolts-reset-list-styles) {
+		ul, ol { list-style: none; }
+	}
+
+	sub, sup { vertical-align: baseline; }
+
+	a { color: inherit; }
+
+	button {
+		background-color: transparent;
+		font: inherit;
+		color: inherit;
+	}
+
+	@if ($bolts-reset-legacy-element-styles) {
+		dir, menu { list-style: none; }
+
+		font {
+			color: inherit !important;
+			font: inherit !important;
+		}
+
+		marquee {
+			overflow: inherit !important;
+			-moz-binding: none;
+		}
+
+		blink { text-decoration: none; }
+
+		nobr { white-space: normal; }
+
+		isindex, listing, xmp, plaintext {
+			font: inherit;
+			font-size: 1em;
+			white-space: normal;
+		}
+	}
+}
+
+/**
+ * sticky-footer()
+ * 
+ * Table based sticky footer
+ */
+@mixin sticky-footer(
+	$wrapper-selector: false,
+	$footer-selector:  false
+) {
+	width: 100%;
+	display: table;
+	table-layout: fixed;
+
+	@if ($wrapper-selector == false) { $wrapper-selector: $bolts-default-sticky-footer-wrapper-selector; }
+	@if ($footer-selector == false) { $footer-selector: $bolts-default-sticky-footer-footer-selector; }
+	
+	@if ($wrapper-selector == false or $footer-selector == false) {
+	  @error "Both $wrapper-selector and $footer-selector need to be defined!";
+	}
+	
+	$formatted-wrapper-selector: '';
+	@if ($wrapper-selector != false and $wrapper-selector != #{&}) {
+	  $formatted-wrapper-selector: ', ' + $wrapper-selector;
+	}
+
+	#{$wrapper-selector},
+	#{$footer-selector} {
+		display: table-row;
+	}
+
+	@at-root html, body {
+		height: 100%;
+	}
+
+	&#{$formatted-wrapper-selector} {
+	  height: 100%;
+	}
+
+	#{$footer-selector} {
+		height: 1px;
+	}
+}
+
+
+/*****************
+ * Helper mixins *
+ *****************/
+
+/**
+ * font() 
+ * 
+ * Define one or multiple @font-faces (include this before any output, including the reset and boilerplate)
+ *
+ * @param {string} $family
+ * @param {string|number} $weight
+ * @param {string} $style
+ * @param {string} $filename - Without path and filetype extension
+ * @param {list.<string>} $formats
+ * @param {string} $path
+ * @param {string} $svg-id
+ * @param {map} $variations - May include all parameters documented above
+ */
+@mixin font(
+	$family: false,
+	$weight: false,
+	$style: false,
+	$filename: false,
+	$formats: false,
+	$path: false,
+	$svg-id: false,
+	$variations: false
+) {
+	@if ($variations == false) { $variations: ((),); }
+
+	@each $variation in $variations {
+		$variation-family: $family;
+		$variation-weight: $weight;
+		$variation-style: $style;
+		$variation-filename: $filename;
+		$variation-formats: $formats;
+		$variation-path: $path;
+		$variation-svg-id: $svg-id;
+
+		@if (map-has-key($variation, 'family'))   { $variation-family:   map-get($variation, 'family'); }
+		@if (map-has-key($variation, 'weight'))   { $variation-weight:   map-get($variation, 'weight'); }
+		@if (map-has-key($variation, 'style'))    { $variation-style:    map-get($variation, 'style'); }
+		@if (map-has-key($variation, 'filename')) { $variation-filename: map-get($variation, 'filename'); }
+		@if (map-has-key($variation, 'formats'))  { $variation-formats:  map-get($variation, 'formats'); }
+		@if (map-has-key($variation, 'path'))     { $variation-path:     map-get($variation, 'path'); }
+		@if (map-has-key($variation, 'svg-id'))   { $variation-svg-id:   map-get($variation, 'svg-id'); }
+
+		
+		@if ($variation-weight == false) { $variation-weight: normal; }
+		@if ($variation-style == false)  { $variation-style: normal; }
+
+		@if ($variation-path == false) {
+			@if ($bolts-default-font-path != false) { $variation-path: $bolts-default-font-path; }
+			@else { $variation-path: ''; }
+		}
+
+		@if ($variation-path != '') { $variation-path: $variation-path + '/'; }
+
+		@font-face {
+			font-family: $variation-family;
+
+			@if ($variation-formats == false) { $variation-formats: ('ttf'); }
+
+			$src: '';
+			@each $extension in $variation-formats {
+				$format: $extension;
+				@if ($extension == 'eot') {
+					$format: 'embedded-opentype';
+					$extension: 'eot?#bolts';
+				}
+				@if ($extension == 'otf') { $format: 'opentype'; }
+				@if ($extension == 'ttf') { $format: 'truetype'; }
+
+				$separator: ', ';
+				@if ($extension == nth($variation-formats, length($variation-formats)) or (length($variation-formats) == 1)) { $separator: ''; }
+
+				@if ($extension == 'svg') {
+					@if ($variation-svg-id == false) { $variation-svg-id: $filename; }
+					$extension: $extension + '#' + $variation-svg-id;
+				}
+
+				$src: $src + 'url("' + $variation-path + $variation-filename + '.' + $extension + '") format("' + $format + '")' + $separator;
+			}
+			src: unquote($src);
+			font-weight: $variation-weight;
+			font-style: $variation-style;
+		}
+	}
+}
+
+
+/**
+ * responsive-font-size() 
+ * 
+ * Fluid font sizing, based on the viewport width, with optional min/max sizes
+ *
+ * @param {number} $ratio
+ * @param {number} $min - CSS length unit required
+ * @param {number} $max - CSS length unit required
+ */
+@mixin responsive-font-size(
+	$ratio: false,
+	$min:   false,
+	$max:   false
+) {
+	@if ($ratio == false and $bolts-default-responsive-font-size-ratio) { $ratio: $bolts-default-responsive-font-size-ratio; }
+	@if ($ratio == false) { @warn "responsive-font-size: $ratio needs to be passed if $bolts-default-responsive-font-size-ratio is not set."; }
+	$ratio: ($ratio / ($ratio * 0 + 1));
+	font-size: $ratio + vw;
+
+	@if ($min) {
+		$viewport-min: (100px / $ratio) * ($min / ($min * 0 + 1));
+		@media (width-to($viewport-min)) { font-size: $min; }
+	}
+
+	@if ($max) {
+		$viewport-max: (100px / $ratio) * ($max / ($max * 0 + 1));
+		@media (width-from($viewport-max)) { font-size: $max; }
+	}
+}
+
+
+/**
+ * container() 
+ * 
+ * Content container, center aligned with a fluid width and a fixed max-width by default
+ *
+ * @param {number} $width - CSS length unit required
+ * @param {number} $max-width - CSS length unit required
+ * @param {string} $align - "right", "left" or "center"
+ */
+@mixin container(
+	$width:     false,
+	$max-width: false,
+	$align:     false
+) {
+	@if ($width == false)     { $width: $bolts-default-container-width; }
+	@if ($max-width == false) { $max-width: $bolts-default-container-max-width; }
+	@if ($align == false)     { $align: $bolts-default-container-align; }
+
+	@if ($width != false)     { width: $width; }
+	@if ($max-width != false) { max-width: $max-width; }
+
+	@if ($align == right or $align == center) { margin-left: auto; }
+	@if ($align == left or $align == center)  { margin-right: auto; }
+}
+
+
+/**
+ * clear-whitespace() 
+ * 
+ * Hide spaces between inline-block elements
+ *
+ * @param {number} $font-size - Font-size to reset children to, CSS length unit required
+ * @param {bool} $break
+ */
+@mixin clear-whitespace(
+	$font-size: false, // child elements font-size resets to this if set
+	$break:     true
+) {
+	font-size: 0;
+	@if ($break == false) { white-space: nowrap; }
+
+	> *,
+	&:before,
+	&:after {
+		@if ($font-size) {
+			font-size: $font-size;
+		} @else {
+			font-size: medium;
+			font-size: 1rem;
+		}
+
+		@if ($break == false) { white-space: normal; }
+	}
+}
+
+
+/**
+ * overlay() 
+ * 
+ * Stretch an element across the width and height of its closest relatively positioned parent
+ *
+ * @param {boolean} $fixed - "To use, or not use fixed positioning - that is the question" -HAMLet
+ * @param {bool} $force-size - Sets "width" and "height" to 100%
+ */
+@mixin overlay(
+	$fixed:      false,
+	$force-size: false
+) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	@if ($fixed) {
+		position: fixed;
+	} @else {
+		position: absolute;
+	}
+
+	@if ($force-size) {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+
+/**
+ * background() 
+ * 
+ * Set background attributes in an easy manner with configurable defaults.
+ * All parameters corresspond to background-properties.
+ *
+ * @param {string} $image
+ * @param {string|number} $size
+ * @param {string|number} $position
+ * @param {string} $repeat
+ * @param {string} $attachment
+ * @param {color} $color
+ */
+@mixin background(
+	$image:      false,
+	$size:       false,
+	$position:   false,
+	$repeat:     false,
+	$attachment: false,
+	$color:      false
+) {
+	@if ($image      == false and $bolts-default-background-image)      { $image:      $bolts-default-background-image; }
+	@if ($size       == false and $bolts-default-background-size)       { $size:       $bolts-default-background-size; }
+	@if ($position   == false and $bolts-default-background-position)   { $position:   $bolts-default-background-position; }
+	@if ($repeat     == false and $bolts-default-background-repeat)     { $repeat:     $bolts-default-background-repeat; }
+	@if ($attachment == false and $bolts-default-background-attachment) { $attachment: $bolts-default-background-attachment; }
+	@if ($color      == false and $bolts-default-background-color)      { $color:      $bolts-default-background-color; }
+
+	@if ($image)      { background-image:      url(#{$image}); }
+	@if ($position)   { background-position:   $position; }
+	@if ($size)       { background-size:       $size; }
+	@if ($repeat)     { background-repeat:     $repeat; }
+	@if ($attachment) { background-attachment: $attachment; }
+	@if ($color)      { background-color:      $color; }
+}
+
+
+/**
+ * transition() 
+ * 
+ * Set transition(s) in an easy manner with configurable defaults
+ *
+ * @param {string} $property
+ * @param {number} $duration - CSS time unit required
+ * @param {string} $easing
+ * @param {number} $delay - CSS time unit required
+ * @param {string} $queue
+ * @param {number} $queue-duration - CSS time unit required
+ * @param {string} $easing
+ * @param {bool} $prevent-on-resize
+ */
+@mixin transition(
+	$property:          false,
+	$duration:          false,
+	$easing:            false,
+	$delay:             false,
+	$queue:             false,
+	$queue-duration:    false,
+	$queue-easing:      false,
+	$prevent-on-resize: false
+) {
+	$transitions: ();
+
+	@if ($property == false and $bolts-default-transition-property) { $property: $bolts-default-transition-property; }
+
+	$properties: $property;
+	@if (type-of($properties) != list) { $properties: append((), $property); }
+
+	@if ($duration == false and $bolts-default-transition-duration) { $duration: $bolts-default-transition-duration; }
+	@if ($easing   == false and $bolts-default-transition-easing)   { $easing: $bolts-default-transition-easing; }
+	@if ($delay    == false and $bolts-default-transition-delay)    { $delay: $bolts-default-transition-delay; }
+
+	@each $property in $properties {
+		$transition: _format-transition($property, $duration, $easing, $delay);
+		$transitions: append($transitions, $transition);
+	}
+
+	@if ($queue == false and $bolts-default-transition-queue) { $queue: $bolts-default-transition-queue; }
+
+	@if ($queue) {
+		$queue-property: $queue;
+		@if ($queue == true and $bolts-default-transition-queue-property) { $queue-property: $bolts-default-transition-queue-property; }
+
+		$queue-properties: $queue-property;
+		@if (type-of($queue-properties) != list) { $queue-properties: append((), $queue-properties); }
+
+		@if ($queue-duration == false and $bolts-default-transition-queue-duration) { $queue-duration: $bolts-default-transition-queue-duration; }
+		@if ($queue-easing   == false and $bolts-default-transition-queue-easing)   { $queue-easing:   $bolts-default-transition-queue-easing; }
+		$queue-delay: $duration;
+		@if ($delay) { $queue-delay: ($duration + $delay); }
+		
+		@each $queue-property in $queue-properties {
+			@if ($queue-property != true) {
+				$queue-transition: _format-transition($queue-property, $queue-duration, $queue-easing, $duration);
+				$transitions: append($transitions, $queue-transition);
+			}
+		}
+	}
+
+	transition: unquote(_implode($transitions));
+	
+	@if ($prevent-on-resize) {
+		@include resizing { transition: none; }
+	}
+}
+
+
+/**
+ * transition-height()
+ *
+ * Used together with misc.autoHeight() in Bolts JS
+ * Transitions height:auto kinda
+ *
+ */
+@mixin transition-height(
+	$closed-selector: false,
+	$duration:        false,
+	$easing:          false
+) {
+	@include transition(height, $duration, $easing);
+	overflow: hidden;
+	
+	#{$closed-selector} { height: 0 !important; }
+}
+
+
+/**
+ * aspect-ratio() 
+ * 
+ * Give a heightless element a height based on its width. 
+ * Always follows the set width:height ratio.
+ *
+ * @param {number} $width - Without CSS unit
+ * @param {number} $height - Without CSS unit
+ * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
+ */
+@mixin aspect-ratio(
+	$width,
+	$height,
+	$pseudo: false
+) {
+	$pseudo: _get-pseudo($pseudo);
+
+	#{$pseudo} {
+		@if (_is-pseudo($pseudo)) { content: ''; }
+		display: block;
+		height: 0;
+		padding-bottom: (100% / $width) * $height;
+	}
+}
+
+
+/**
+ * clear() 
+ * 
+ * Your average, run-of-the-mill clearfix
+ *
+ * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
+ */
+@mixin clear($pseudo: false) {
+	$pseudo: _get-pseudo($pseudo);
+
+	#{$pseudo} {
+		@if (_is-pseudo($pseudo)) { content: ''; }
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+}
+
+
+/**
+ * center() 
+ * 
+ * Center an element inside its closest relatively positioned parent, in any direction
+ *
+ * @param {string} $direction - "horizontal", "vertical" or "both"
+ */
+@mixin center($direction: both) {
+	position: absolute;
+
+	@if ($direction == horizontal) {
+		left: 50%;
+		transform: translateX(-50%);
+	} @else if ($direction == vertical) {
+		top: 50%;
+		transform: translateY(-50%);
+	} @else {
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%)
+	}
+}
+
+
+/**
+ * vertical-align() 
+ * 
+ * Vertically aligns a child element if the parent is taller
+ *
+ * @param {string} $position - "top", "bottom" or "middle"
+ * @param {string} $selector
+ * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
+ */
+@mixin vertical-align(
+	$position: false,
+	$selector: '> *',
+	$pseudo:   false
+) {
+	$pseudo: _get-pseudo($pseudo);
+	@if ($position != top and $position != bottom) { $position: middle; }
+
+	@include clear-whitespace($break: false);
+
+	#{$pseudo} {
+		@if (_is-pseudo($pseudo)) { content: ''; }
+		min-height: inherit;
+		height: 100%;
+	}
+
+	#{$selector}, #{$pseudo} {
+		display: inline-block;
+		vertical-align: $position;
+	}
+}
+
+
+/**
+ * antialias() 
+ * 
+ * Font smoothing, best used with light text on dark backgrounds
+ *
+ * @param {string} $method - "none", "reset" or false (default)
+ */
+@mixin antialias($method: false) {
+	@if ($method == 'none') {
+		-webkit-font-smoothing: none;
+		-moz-osx-font-smoothing: unset;
+	} @else if ($method == 'reset') {
+		-webkit-font-smoothing: subpixel-antialiased;
+		-moz-osx-font-smoothing: auto;
+	} @else {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+
+/**
+ * scroll() 
+ * 
+ * Make element scrollable and apply elastic scroll on touch devices
+ */
+@mixin scroll {
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+
+/**
+ * grayscale() 
+ * 
+ * Grayscale filter (uses a selector hack for IE 9, does not work in IE 10-11 and Edge)
+ */
+@mixin grayscale {
+	-webkit-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
+	filter: gray \0;
+}
+
+
+/**
+ * inline-layout() 
+ * 
+ * Layout component using display: inline-block.
+ * Useful for columns of an unknown amount.
+ *
+ * @param {number} $gutters - CSS length unit required
+ * @param {string} $align
+ * @param {string} $col - Column selector
+ * @param {number} $font-size - CSS length unit required
+ */
+@mixin inline-layout(
+	$columns:   false,
+	$gutters:   false,
+	$align:     false,
+	$font-size: false
+) {
+	$items: length($columns);
+	$width: false;
+	
+	@if (type-of($columns) == list and $items > 1) {
+		$column-count: 0;
+
+		@each $column in $columns {
+			$column-count: $column-count + $column;
+		}
+
+		@include inline-row($gutters, $font-size);
+
+		@for $item from 1 through $items {
+			$width: nth($columns, $item) / $column-count;
+
+			& > *:nth-child(#{$items}n + #{$item}) {
+				@include inline-column($width, $gutters);
+			}
+		}
+	} @else {
+		@include inline-row($gutters, $font-size);
+
+		@if (type-of($columns) == number) {
+			$width: 1 / $columns
+		}
+
+		> * {
+			@include inline-column($width, $gutters);
+		}
+	}
+}
+
+
+/**
+ * inline-row()
+ */
+@mixin inline-row(
+	$gutters:   false,
+	$font-size: false
+) {
+	$horizontal-gutter: false;
+	$vertical-gutter:   false;
+
+	@if ($gutters == false and $bolts-default-inline-layout-gutters) {
+		$gutters: $bolts-default-inline-layout-gutters;
+	}
+
+	@include clear-whitespace($font-size);
+
+	@if ($gutters) {
+		$horizontal-gutter: _format-gutters($gutters, horizontal);
+		$vertical-gutter:   _format-gutters($gutters, vertical);
+
+		@if (unit($vertical-gutter) == "em" or unit($horizontal-gutter) == "em") {
+			@warn "inline-layout: $gutters cannot use em (repeater sets font-size to 0), use px, rem, vh or vw instead.";
+		}
+
+		@if ($horizontal-gutter) {
+			margin-left: -($horizontal-gutter);
+		}
+
+		@if ($vertical-gutter) {
+			&:before {
+				content: '';
+				display: block;
+				margin-top: -($vertical-gutter);
+			}
+		}
+	}
+}
+
+
+/**
+ * inline-column()
+ */
+@mixin inline-column(
+	$width:   false,
+	$gutters: false,
+	$align:   false
+) {
+	$vertical-gutter:   false;
+	$horizontal-gutter: false;
+
+	@if ($gutters == false and $bolts-default-inline-layout-gutters) {
+		$gutters: $bolts-default-inline-layout-gutters;
+	}
+
+	@if ($align == false and $bolts-default-inline-layout-align) {
+		$align: $bolts-default-inline-layout-align;
+	}
+
+	@if ($align) {
+		vertical-align: $align;
+	}
+
+	@if (type-of($width) == number and unitless($width)) {
+		$width: percentage($width);
+	}
+
+	display: inline-block;
+	min-height: 1px;
+
+	@if ($width) {
+		width: $width;
+	}
+
+	@if ($gutters) {
+		$horizontal-gutter: _format-gutters($gutters, horizontal);
+		$vertical-gutter:   _format-gutters($gutters, vertical);
+
+		@if ($vertical-gutter) {
+			padding-top: $vertical-gutter;
+		}
+
+		@if ($horizontal-gutter) {
+			padding-left: $horizontal-gutter;
+		}
+	}
+}
+
+
+/**
+ * flex-layout()
+ */
+@mixin flex-layout(
+	$columns: false,
+	$gutters: false,
+	$align:   false
+) {
+	$items: length($columns);
+
+	@if ($align == false and $bolts-default-flex-layout-align) {
+		$align: $bolts-default-flex-layout-align;
+	}
+
+	@if (type-of($columns) == number) {
+		@include flex-row($gutters);
+
+		@if ($align) {
+			@if ($align == top) {
+				$align: flex-start;
+			} @else if ($align == middle) {
+				$align: center;
+			} @else if ($align == bottom) {
+				$align: flex-end;
+			}
+
+			align-items: $align;
+		}
+
+		> * {
+			@include flex-column(1 / $columns, $gutters);
+		}
+	} @else if (type-of($columns) == list and $items > 1) {
+		$column-count: 0;
+
+		@each $column in $columns {
+			$column-count: $column-count + $column;
+		}
+
+		@include flex-row($gutters);
+
+		@for $item from 1 through $items {
+			$width: nth($columns, $item) / $column-count;
+
+			& > *:nth-child(#{$items}n + #{$item}) {
+				@include flex-column($width, $gutters);
+			}
+		}
+	}
+}
+
+
+/**
+ * flex-row()
+ */
+@mixin flex-row($gutters: false) {
+	$vertical-gutter: false;
+	$horizontal-gutter: false;
+
+	@if ($gutters == false) {
+		@if ($bolts-default-flex-layout-gutters) {
+			$gutter: $bolts-default-flex-layout-gutters;
+		} @else {
+			$gutters: 0;
+		}
+	} @else {
+		$horizontal-gutter: _format-gutters($gutters, horizontal);
+		$vertical-gutter:   _format-gutters($gutters, vertical);
+	}
+
+	display: flex;
+	flex-wrap: wrap;
+
+	@if ($horizontal-gutter and $horizontal-gutter != 0) {
+		margin-left: -($horizontal-gutter);
+	}
+
+	@if ($vertical-gutter and $vertical-gutter != 0) {
+		margin-top: -($vertical-gutter);
+	}
+}
+
+
+/**
+ * flex-column()
+ */
+@mixin flex-column($width, $gutters: false) {
+	$vertical-gutter: false;
+	$horizontal-gutter: false;
+
+	@if ($gutters == false) {
+		@if ($bolts-default-flex-layout-gutters) {
+			$gutters: $bolts-default-flex-layout-gutters;
+		} @else {
+			$gutters: 0;
+		}
+	} @else {
+		$horizontal-gutter: _format-gutters($gutters, horizontal);
+		$vertical-gutter:   _format-gutters($gutters, vertical);
+	}
+
+	@if (type-of($width) == number and unitless($width)) {
+		$width: percentage($width);
+	}
+
+	@if ($horizontal-gutter and $horizontal-gutter != 0) {
+		margin-left: $horizontal-gutter;
+		width: calc(#{$width} - #{$horizontal-gutter});
+	} @else {
+		width: $width;
+	}
+
+	@if ($vertical-gutter and $vertical-gutter != 0) {
+		margin-top: $vertical-gutter;
+	}
+}
+
+
+/**
+ * stagger-delay() 
+ * 
+ * Delay the transition or animation of each matching element.
+ *
+ * @param {string} $property - "animation" or "transition"
+ * @param {number} $start - Delay beginning of animation/transition, CSS time unit required
+ * @param {number} $increment - Delay between each iteration
+ * @param {string} $direction - "forwards" or "backwards"
+ */
+@mixin stagger-delay(
+	$property:   false,
+	$start:      false,
+	$increment:  false,
+	$iterations: false,
+	$direction:  false,
+	$modifier:   false
+) {
+	@if ($property != animation) { $property: transition; }
+	@if ($start == false) { $start: 0s; }
+	@if ($increment == false) { $increment: 0s; }
+	@if ($iterations == false) { $iterations: 0; }
+	@if ($direction == false) { $direction: forwards; }
+	@if ($modifier == false) { $modifier: 0; }
+	
+	$base-modifier: $modifier;
+	$modifier: $modifier + 1;
+
+	@for $i from 1 through $iterations {
+		$incremented-modifier: $i * $i * $base-modifier * ($base-modifier / 2) * $i;
+	
+		@if ($direction == forwards) {
+			&:nth-of-type(#{$i}) { #{$property}-delay: $start + (($increment * $i) + $incremented-modifier); } 
+		} @else {
+			&:nth-last-of-type(#{$i}) { #{$property}-delay: $start + (($increment * $i) + $incremented-modifier); }
+		}
+	}
+}
+
+
+/**
+ * auto-col() 
+ * 
+ * Sets widths to dynamically fit all columns in one row
+ *
+ * @param {number} $min
+ * @param {number} $max
+ * @param {string} $element
+ */
+@mixin auto-col(
+	$min:      false,
+	$max:      false,
+	$selector: '*'
+) {
+	@if ($min == false and $bolts-default-auto-col-min) { $min: $bolts-default-auto-col-min; }
+	@if ($max == false and $bolts-default-auto-col-max) { $max: $bolts-default-auto-col-max; }
+	@if ($min == false or $max == false) { @warn "auto-col: $min and $max need to be passed if $bolts-default-auto-col-min and $bolts-default-auto-col-max are not set."; }
+	$max-width: (100% / $min);
+	$min-width: (100% / $max);
+	width: $min-width;
+
+	@if ($min != $max) {
+		@for $i from $max - 1 through 1 {
+			&:nth-last-of-type(#{$i}):first-of-type,
+			&:nth-last-of-type(#{$i}):first-of-type ~ #{$selector} {
+				$width: (100% / $i);
+				@if ($i < $min) { $width: $max-width; }
+				width: $width;
+			}
+		}
+	}
+}
+
+
+/**
+ * reverse() 
+ * 
+ * Reverse the order of an element's children without the need for duplicate markup.
+ */
+@mixin reverse(
+	$vertical-align: false
+) {
+	transform: rotate(180deg);
+	@if ($vertical-align == top) { $vertical-align: bottom; }
+	@else if ($vertical-align == bottom) { $vertical-align: top; }
+
+	> * {
+		transform: rotate(-180deg);
+		@if ($vertical-align != false) { vertical-align: $vertical-align; }
+	}
+}
+
+
+/*******************
+ * Selector mixins *
+ *******************/
+
+/**
+ * select() 
+ * 
+ * Select a predefined set of selectors
+ *
+ * @param {list} $selectors
+ */
+@mixin select($selectors...) {
+	$select: ();
+
+	@each $selector in $selectors {
+		@if (map-get($bolts-selectors, $selector)) {
+			$select: join($select, map-get($bolts-selectors, $selector));
+		} @else {
+			$select: join($select, $selector);
+		}
+	}
+
+	$select: _implode($select);
+
+	@if ($select != '') {
+		#{$select} { @content; }
+	}
+}
+
+
+/**
+ * placeholder() 
+ * 
+ * Style input placeholders
+ */
+@mixin placeholder {
+	&::-webkit-input-placeholder {
+		@content;
+	}
+
+	&::-moz-placeholder {
+		@content;
+	}
+
+	&:-ms-input-placeholder {
+		@content;
+	}
+
+	&:-moz-placeholder {
+		@content;
+	}
+}
+
+
+/**
+ * count() 
+ * 
+ * Matches a set of elements when they are of a certain amount
+ *
+ * @param {number} $amount
+ * @param {string} $element
+ */
+@mixin count($amount: 1, $element: "*") {
+	&:nth-last-of-type(#{$amount}):first-of-type,
+	&:nth-last-of-type(#{$amount}):first-of-type ~ #{$element} {
+		@content;
+	}
+}
+
+
+/**
+ * state() 
+ * 
+ * Matches current state.
+ *
+ * @param {string} $key
+ * @param {string} $value
+ * @param {bool} $global - Get data from global state
+ */
+@mixin state($key: false, $value: true, $global: true) {
+	@if ($global != true) {
+		@if ($value == false) {
+			&:not([data-bolts-state-#{$key}]) {
+				@content;
+			}
+		} @else {
+			@if ($value == true) {
+				&[data-bolts-state-#{$key}] {
+					@content;
+				}
+			} @else {
+				&[data-bolts-state-#{$key}="#{$value}"] {
+					@content;
+				}
+			}
+		}
+	} @else {
+		$selector: #{&};
+
+		@if (str-index($selector, html)) {
+			$selector: str-slice($selector, str-index($selector, html) + str-length(html));
+		} @else {
+			$selector: ' ' + $selector;
+		}
+
+		@if ($value == false) {
+			@at-root html:not([data-bolts-state-#{$key}])#{$selector} {
+				@content;
+			}
+		} @else {
+			@if ($value == true) {
+				@at-root html[data-bolts-state-#{$key}]#{$selector} {
+					@content;
+				}
+			} @else {
+				@at-root html[data-bolts-state-#{$key}="#{$value}"]#{$selector} {
+					@content;
+				}
+			}
+		}
+	}
+}
+
+
+/**
+ * resizing() 
+ * 
+ * Matches when viewport is being resized
+ */
+@mixin resizing() {
+	@include state('resizing') {
+		@content;
+	}
+}
+
+
+/**
+ * orientation() 
+ * 
+ * Matches img elements with the specified orientation
+ *
+ * @param {string} $orientation - "portrait", "landscape" or "square"
+ */
+@mixin orientation($orientation: false) {
+	@if ($orientation == portrait or $orientation == landscape or $orientation == square) {
+		@include state('orientation', $orientation, false) {
+			@content;
+		}
+	}
+}
+
+
+/**
+ * hover() 
+ * 
+ * Matches if Bolts has detected any hover capability
+ */
+@mixin hover() {
+	@include state('detect-hover') {
+		@content;
+	}
+}
+
+
+/**
+ * no-hover() 
+ * 
+ * Matches if Bolts has not detected any hover capability
+ */
+@mixin no-hover() {
+	@include state('detect-hover', false) {
+		@content;
+	}
+}
