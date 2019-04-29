@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.0 | MIT License
+ * Bolts 1.0.1 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/
@@ -9,9 +9,6 @@ const state = {
 	get,
 	set,
 	remove,
-	toggle,
-	on,
-	trigger,
 	getDOMState,
 	setDOMState,
 
@@ -19,8 +16,6 @@ const state = {
 		global: [],
 		local: [],
 	},
-
-	_listeners: [],
 }
 
 /**
