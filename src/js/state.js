@@ -9,9 +9,6 @@ const state = {
 	get,
 	set,
 	remove,
-	toggle,
-	on,
-	trigger,
 	getDOMState,
 	setDOMState,
 
@@ -19,8 +16,6 @@ const state = {
 		global: [],
 		local: [],
 	},
-
-	_listeners: [],
 }
 
 /**
