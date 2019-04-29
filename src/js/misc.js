@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.1 | MIT License
+ * Bolts 1.0.2 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/

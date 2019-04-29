@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.1 | MIT License
+ * Bolts 1.0.2 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/
@@ -105,8 +105,6 @@ function set(key, value = true, node = false) {
 			node: node
 		})
 
-		state.trigger('change', key, node)
-
 		setDOMState(node)
 	} else {
 		let i = state._store.global.length - 1
@@ -123,8 +121,6 @@ function set(key, value = true, node = false) {
 			key: key,
 			value: value
 		})
-
-		state.trigger('change', key)
 
 		setDOMState()
 	}
@@ -155,8 +151,6 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		state.trigger('change', key, node)
-
 		setDOMState(node)
 	} else {
 		let i = state._store.global.length - 1
@@ -168,8 +162,6 @@ function remove(key, node = false) {
 
 			i -= 1
 		}
-
-		state.trigger('change', key)
 
 		setDOMState()
 	}
