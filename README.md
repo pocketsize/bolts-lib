@@ -434,7 +434,38 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 
 - `transition()`
 
-*This mixin currently has no description*
+Sets transition with pre set vales for duration and easing. Second argument queues a second transition after the initial transition is done.
+
+<br>
+
+**Usage:**
+
+```sass
+.button {
+    background-color: black;
+    @include transition(background-color);
+
+    &:hover {
+      background-color: red;
+    }
+}
+```
+
+**Usage with $queue:**
+
+```sass
+.header-icon {
+    visibility: hidden;
+    opacity: 0;
+    @include transition(opacity, $queue: visibility);
+
+    @include state('menu-open') {
+      visibility: visible;
+      opacity: 1;
+      @include transition(opacity);
+    }
+}
+```
 
 <br>
 
