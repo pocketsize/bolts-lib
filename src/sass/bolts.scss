@@ -939,7 +939,7 @@ $bolts-selectors:                              false !default;
 		}
 
 		> * {
-			@include inline-column($width, $gutters);
+			@include inline-column($width, $gutters, $align);
 		}
 	}
 }
