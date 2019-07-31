@@ -1,10 +1,19 @@
 # Bolts 
-*v1.0.2*
+*v1.0.3*
 
 Bolts is a collection of practical Sass mixins and JS functions helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that does the things you're tired of.
 
 Bolts does not output any unnessecary styles and all functions can be loaded separately through ES6 imports, making its footprint as tiny as possible.
 
+### Installation
+
+*Installation is currently not documented.*
+
+<br>
+
+------------
+
+<br>
 
 #### All config variables
 The available options are:
@@ -45,9 +54,15 @@ The available options are:
 | $bolts-breakpoints                            | `(medium: 500px)`       | Breakpoints that can be accessed by the width and height functions when writing media queries   |
 | $bolts-selectors                              | `(headings: 'h1, h2')`  | Map containing element collections that can be accessed by the `select` mixin                   |
 
-### JS setup
+<br>
 
-JS setup is extremely simple. Just import and init it [as described above](#installation "as described above") and you are good to go.
+------------
+
+<br>
+
+### JavaScript setup
+
+*JavaScript setup currently has no documentation.*
 
 <br>
 
