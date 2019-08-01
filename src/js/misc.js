@@ -28,7 +28,6 @@ function autoHeight(selector) {
 		elem.style.height = `${elem.scrollHeight}px`
 	}
 
-
 	if (this.elems.length) {
 		this.elems.forEach(elem => {
 			this.measure(elem)

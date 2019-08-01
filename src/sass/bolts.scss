@@ -145,11 +145,16 @@ $bolts-selectors:                              false !default;
 	@if (map-get($bolts-breakpoints, $from)) { $from: map-get($bolts-breakpoints, $from) }
 	@if (map-get($bolts-breakpoints, $to))   { $to:   map-get($bolts-breakpoints, $to)   }
 
-	@if (type-of($from) != number) {
-		@error "breakpoint: Invalid value supplied to argument $from (#{$from})";
+	@if ($from != false) {
+		@if (type-of($from) != number or type-of($from) == number and unitless($from)) {
+			@error "breakpoint: Invalid value supplied to argument $from (#{$from})";
+		}
 	}
-	@if (type-of($to) != number) {
-		@error "breakpoint: Invalid value supplied to argument $to (#{$to})";
+
+	@if ($to != false) {
+		@if (type-of($to) != number or type-of($to) == number and unitless($to)) {
+			@error "breakpoint: Invalid value supplied to argument $from (#{$to})";
+		}
 	}
 
 	@if ($from and $to) { @return "min-" + $property + ": " + ($from + 1) + ") and (max-" + $property + ": " + $to; }
@@ -1438,7 +1443,7 @@ $bolts-selectors:                              false !default;
 
 @mixin orientation($orientation: false) {
 	@if ($orientation == portrait or $orientation == landscape or $orientation == square) {
-		@include state('orientation', $orientation, false) {
+		@include state('orientation', $orientation, true) {
 			@content;
 		}
 	}
