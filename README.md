@@ -1,10 +1,19 @@
 # Bolts 
-*v1.0.2*
+*v1.0.3*
 
 Bolts is a collection of practical Sass mixins and JS functions helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that does the things you're tired of.
 
 Bolts does not output any unnessecary styles and all functions can be loaded separately through ES6 imports, making its footprint as tiny as possible.
 
+### Installation
+
+*Installation is currently not documented.*
+
+<br>
+
+------------
+
+<br>
 
 #### All config variables
 The available options are:
@@ -45,9 +54,15 @@ The available options are:
 | $bolts-breakpoints                            | `(medium: 500px)`       | Breakpoints that can be accessed by the width and height functions when writing media queries   |
 | $bolts-selectors                              | `(headings: 'h1, h2')`  | Map containing element collections that can be accessed by the `select` mixin                   |
 
-### JS setup
+<br>
 
-JS setup is extremely simple. Just import and init it [as described above](#installation "as described above") and you are good to go.
+------------
+
+<br>
+
+### JavaScript setup
+
+*JavaScript setup currently has no documentation.*
 
 <br>
 
@@ -72,7 +87,7 @@ Functions to run inside your `@media` queries that lets you access your defined 
 
 **Usage**:
 
-```sass
+```scss
 .columns {
   @include inline-layout;
 
@@ -110,7 +125,7 @@ Function to run in your `@media` queries to target retina screens.
 
 **Usage**:
 
-```sass
+```scss
 .icon {
   @media ( retina() ) { background-image: url('icon@2x.jpg'); }
 }
@@ -150,7 +165,7 @@ Function to run in your `@media` queries to target retina screens.
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -179,7 +194,7 @@ Function to run in your `@media` queries to target retina screens.
 
 **Usage:**
 
-```sass
+```scss
 .page {
   @include sticky-footer(
     '.page-wrapper',
@@ -215,7 +230,7 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 
 **Usage**:
 
-```sass
+```scss
 @include font(
   $family:   FontAwesome,
   $filename: fontawesome-webfont,
@@ -266,7 +281,7 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -297,7 +312,7 @@ Sets basic container styling on element.
 
 **Usage:**
 
-```sass
+```scss
 .page {
   .page-inner {
     @include container(90%, 1080px);
@@ -331,7 +346,7 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 
 **Usage:**
 
-```sass
+```scss
 .header {
   @include clear-whitespace($font-size: 12px);
 
@@ -367,7 +382,7 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 
 **Usage:**
 
-```sass
+```scss
 .hero {
     position relative;
     height: 100vh;
@@ -404,7 +419,7 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 
 **Usage:**
 
-```sass
+```scss
 .icon {
   @include background(
     '../images/icon.png',
@@ -440,7 +455,7 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 
 **Usage:**
 
-```sass
+```scss
 .button {
     background-color: black;
     @include transition(background-color);
@@ -453,7 +468,7 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 
 **Usage with $queue:**
 
-```sass
+```scss
 .header-icon {
     visibility: hidden;
     opacity: 0;
@@ -471,7 +486,7 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -499,7 +514,7 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -527,7 +542,7 @@ Set an aspect ratio for a block element.
 
 **Usage:**
 
-```sass
+```scss
 .hero {
   @include background('../images/background.jpg');
   @include aspect-ratio(16, 9);
@@ -559,7 +574,7 @@ Set an aspect ratio for a block element.
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -587,7 +602,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 **Usage:**
 
-```sass
+```scss
 .hero {
   position: relative;
 
@@ -627,7 +642,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 **Usage:**
 
-```sass
+```scss
 .hero {
   @include vertical-align(middle);
   min-height: 100vh;
@@ -674,7 +689,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 **Usage:**
 
-```sass
+```scss
 .hero-text {
   color: white;
   @include antialias;
@@ -706,7 +721,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 **Usage:**
 
-```sass
+```scss
 .modal-inner {
   @include scroll;
 }
@@ -728,7 +743,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 **Usage:**
 
-```sass
+```scss
 .photo {
   @include transition(filter -webkit-filter);
 
@@ -770,7 +785,7 @@ HTML
 
 SCSS
 
-```sass
+```scss
 .items {
   @include inline-layout;
 
@@ -818,7 +833,7 @@ SCSS
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -846,7 +861,7 @@ Gives every selected element an increased delay based on its order in the DOM. E
 
 **Usage**:
 
-```sass
+```scss
 .menu.is-open {
 
   .menu-item {
@@ -889,7 +904,7 @@ Sets widths to dynamically fit all columns in one row
 
 **Usage:**
 
-```sass
+```scss
 .columns {
   @include inline-layout;
 
@@ -925,7 +940,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 .items {
   @include inline-layout;
 
@@ -953,7 +968,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -981,7 +996,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -1009,7 +1024,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -1037,7 +1052,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -1065,7 +1080,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -1093,7 +1108,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
@@ -1122,7 +1137,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Usage:**
 
-```sass
+```scss
 // This mixin currently has no example
 ```
 
