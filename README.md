@@ -1,5 +1,5 @@
 # Bolts 
-*v1.0.3*
+*v1.0.4*
 
 Bolts is a collection of practical Sass mixins and JS functions helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that does the things you're tired of.
 
