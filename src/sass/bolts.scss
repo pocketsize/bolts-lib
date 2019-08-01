@@ -133,6 +133,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $to - CSS length unit required
  * @param {string} $property - "height" or "width"
  */
+
 @function breakpoint(
 	$from:     false,
 	$to:       false,
@@ -140,8 +141,16 @@ $bolts-selectors:                              false !default;
 ) {
 	@if ($bolts-breakpoints == false) { $bolts-breakpoints: (); }
 	@if ($property != height) { $property: width; }
+
 	@if (map-get($bolts-breakpoints, $from)) { $from: map-get($bolts-breakpoints, $from) }
 	@if (map-get($bolts-breakpoints, $to))   { $to:   map-get($bolts-breakpoints, $to)   }
+
+	@if (type-of($from) != number) {
+		@error "breakpoint: Invalid value supplied to argument $from (#{$from})";
+	}
+	@if (type-of($to) != number) {
+		@error "breakpoint: Invalid value supplied to argument $to (#{$to})";
+	}
 
 	@if ($from and $to) { @return "min-" + $property + ": " + ($from + 1) + ") and (max-" + $property + ": " + $to; }
 	@if ($from) { @return "min-" + $property + ": " + ($from + 1); }
@@ -157,6 +166,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $from - CSS unit mandatory
  * @param {number} $to - CSS unit mandatory
  */
+
 @function width($from: false, $to: false) {
 	@return breakpoint($from, $to);
 }
@@ -178,6 +188,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $from - CSS unit mandatory
  * @param {number} $to - CSS unit mandatory
  */
+
 @function height($from: false, $to: false) {
 	@return breakpoint($to, $from, height);
 }
@@ -198,6 +209,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {number} $min-pixel-ratio
  */
+
 @function retina($min-pixel-ratio: 2) {
 	@return "min-device-pixel-ratio: " + $min-pixel-ratio + "), (min-resolution: " + ($min-pixel-ratio * 96) + "dpi";
 }
@@ -217,6 +229,7 @@ $bolts-selectors:                              false !default;
  *
  * @returns {string} 
  */
+
 @function ease($easing-name: false) {
 	$easings: (
 		linear:      "0.25, 0.25, 0.75, 0.75",
@@ -271,6 +284,7 @@ $bolts-selectors:                              false !default;
  * 
  * Reset styles to normalize browser differences (included in boilerplate by default)
  */
+
 @mixin reset() {
 	* {
 		vertical-align: baseline;
@@ -278,11 +292,14 @@ $bolts-selectors:                              false !default;
 		font-family: inherit;
 		font-style: inherit;
 		font-size: 100%;
+		color: inherit;
+		background: none;
 		border: 0 none;
 		outline: 0;
 		padding: 0;
 		margin: 0;
 		text-decoration: none;
+		border-radius: 0;
 
 		&, &:before, &:after {
 			box-sizing: border-box;
@@ -374,6 +391,7 @@ $bolts-selectors:                              false !default;
  * 
  * Table based sticky footer
  */
+
 @mixin sticky-footer(
 	$wrapper-selector: false,
 	$footer-selector:  false
@@ -386,12 +404,13 @@ $bolts-selectors:                              false !default;
 	@if ($footer-selector == false) { $footer-selector: $bolts-default-sticky-footer-footer-selector; }
 	
 	@if ($wrapper-selector == false or $footer-selector == false) {
-	  @error "Both $wrapper-selector and $footer-selector need to be defined!";
+		@error "sticky-footer: Both $wrapper-selector and $footer-selector need to be defined";
 	}
 	
 	$formatted-wrapper-selector: '';
+
 	@if ($wrapper-selector != false and $wrapper-selector != #{&}) {
-	  $formatted-wrapper-selector: ', ' + $wrapper-selector;
+		$formatted-wrapper-selector: ', ' + $wrapper-selector;
 	}
 
 	#{$wrapper-selector},
@@ -404,7 +423,7 @@ $bolts-selectors:                              false !default;
 	}
 
 	&#{$formatted-wrapper-selector} {
-	  height: 100%;
+		height: 100%;
 	}
 
 	#{$footer-selector} {
@@ -431,6 +450,7 @@ $bolts-selectors:                              false !default;
  * @param {string} $svg-id
  * @param {map} $variations - May include all parameters documented above
  */
+
 @mixin font(
 	$family: false,
 	$weight: false,
@@ -513,6 +533,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $min - CSS length unit required
  * @param {number} $max - CSS length unit required
  */
+
 @mixin responsive-font-size(
 	$ratio: false,
 	$min:   false,
@@ -544,6 +565,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $max-width - CSS length unit required
  * @param {string} $align - "right", "left" or "center"
  */
+
 @mixin container(
 	$width:     false,
 	$max-width: false,
@@ -569,6 +591,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $font-size - Font-size to reset children to, CSS length unit required
  * @param {bool} $break
  */
+
 @mixin clear-whitespace(
 	$font-size: false, // child elements font-size resets to this if set
 	$break:     true
@@ -599,6 +622,7 @@ $bolts-selectors:                              false !default;
  * @param {boolean} $fixed - "To use, or not use fixed positioning - that is the question" -HAMLet
  * @param {bool} $force-size - Sets "width" and "height" to 100%
  */
+
 @mixin overlay(
 	$fixed:      false,
 	$force-size: false
@@ -634,6 +658,7 @@ $bolts-selectors:                              false !default;
  * @param {string} $attachment
  * @param {color} $color
  */
+
 @mixin background(
 	$image:      false,
 	$size:       false,
@@ -672,6 +697,7 @@ $bolts-selectors:                              false !default;
  * @param {string} $easing
  * @param {bool} $prevent-on-resize
  */
+
 @mixin transition(
 	$property:          false,
 	$duration:          false,
@@ -735,6 +761,7 @@ $bolts-selectors:                              false !default;
  * Transitions height:auto kinda
  *
  */
+
 @mixin transition-height(
 	$closed-selector: false,
 	$duration:        false,
@@ -757,6 +784,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $height - Without CSS unit
  * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
  */
+
 @mixin aspect-ratio(
 	$width,
 	$height,
@@ -780,6 +808,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
  */
+
 @mixin clear($pseudo: false) {
 	$pseudo: _get-pseudo($pseudo);
 
@@ -800,6 +829,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {string} $direction - "horizontal", "vertical" or "both"
  */
+
 @mixin center($direction: both) {
 	position: absolute;
 
@@ -826,6 +856,7 @@ $bolts-selectors:                              false !default;
  * @param {string} $selector
  * @param {string} $pseudo - Optional selector to use insted of default pseudo-element
  */
+
 @mixin vertical-align(
 	$position: false,
 	$selector: '> *',
@@ -856,6 +887,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {string} $method - "none", "reset" or false (default)
  */
+
 @mixin antialias($method: false) {
 	@if ($method == 'none') {
 		-webkit-font-smoothing: none;
@@ -875,6 +907,7 @@ $bolts-selectors:                              false !default;
  * 
  * Make element scrollable and apply elastic scroll on touch devices
  */
+
 @mixin scroll {
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
@@ -886,6 +919,7 @@ $bolts-selectors:                              false !default;
  * 
  * Grayscale filter (uses a selector hack for IE 9, does not work in IE 10-11 and Edge)
  */
+
 @mixin grayscale {
 	-webkit-filter: grayscale(100%);
 	-ms-filter: grayscale(100%);
@@ -906,6 +940,7 @@ $bolts-selectors:                              false !default;
  * @param {string} $col - Column selector
  * @param {number} $font-size - CSS length unit required
  */
+
 @mixin inline-layout(
 	$columns:   false,
 	$gutters:   false,
@@ -948,6 +983,7 @@ $bolts-selectors:                              false !default;
 /**
  * inline-row()
  */
+
 @mixin inline-row(
 	$gutters:   false,
 	$font-size: false
@@ -987,6 +1023,7 @@ $bolts-selectors:                              false !default;
 /**
  * inline-column()
  */
+
 @mixin inline-column(
 	$width:   false,
 	$gutters: false,
@@ -1036,6 +1073,7 @@ $bolts-selectors:                              false !default;
 /**
  * flex-layout()
  */
+
 @mixin flex-layout(
 	$columns: false,
 	$gutters: false,
@@ -1088,6 +1126,7 @@ $bolts-selectors:                              false !default;
 /**
  * flex-row()
  */
+
 @mixin flex-row($gutters: false) {
 	$vertical-gutter: false;
 	$horizontal-gutter: false;
@@ -1119,6 +1158,7 @@ $bolts-selectors:                              false !default;
 /**
  * flex-column()
  */
+
 @mixin flex-column($width, $gutters: false) {
 	$vertical-gutter: false;
 	$horizontal-gutter: false;
@@ -1161,6 +1201,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $increment - Delay between each iteration
  * @param {string} $direction - "forwards" or "backwards"
  */
+
 @mixin stagger-delay(
 	$property:   false,
 	$start:      false,
@@ -1200,6 +1241,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $max
  * @param {string} $element
  */
+
 @mixin auto-col(
 	$min:      false,
 	$max:      false,
@@ -1230,6 +1272,7 @@ $bolts-selectors:                              false !default;
  * 
  * Reverse the order of an element's children without the need for duplicate markup.
  */
+
 @mixin reverse(
 	$vertical-align: false
 ) {
@@ -1255,6 +1298,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {list} $selectors
  */
+
 @mixin select($selectors...) {
 	$select: ();
 
@@ -1279,6 +1323,7 @@ $bolts-selectors:                              false !default;
  * 
  * Style input placeholders
  */
+
 @mixin placeholder {
 	&::-webkit-input-placeholder {
 		@content;
@@ -1306,6 +1351,7 @@ $bolts-selectors:                              false !default;
  * @param {number} $amount
  * @param {string} $element
  */
+
 @mixin count($amount: 1, $element: "*") {
 	&:nth-last-of-type(#{$amount}):first-of-type,
 	&:nth-last-of-type(#{$amount}):first-of-type ~ #{$element} {
@@ -1317,14 +1363,15 @@ $bolts-selectors:                              false !default;
 /**
  * state() 
  * 
- * Matches current state.
+ * Matches elements based on current state.
  *
  * @param {string} $key
  * @param {string} $value
- * @param {bool} $global - Get data from global state
+ * @param {bool} $local - If true, based on the state of the current element. If false, the global state
  */
-@mixin state($key: false, $value: true, $global: true) {
-	@if ($global != true) {
+
+@mixin state($key: false, $value: true, $local: false) {
+	@if ($local == true) {
 		@if ($value == false) {
 			&:not([data-bolts-state-#{$key}]) {
 				@content;
@@ -1373,6 +1420,7 @@ $bolts-selectors:                              false !default;
  * 
  * Matches when viewport is being resized
  */
+
 @mixin resizing() {
 	@include state('resizing') {
 		@content;
@@ -1387,6 +1435,7 @@ $bolts-selectors:                              false !default;
  *
  * @param {string} $orientation - "portrait", "landscape" or "square"
  */
+
 @mixin orientation($orientation: false) {
 	@if ($orientation == portrait or $orientation == landscape or $orientation == square) {
 		@include state('orientation', $orientation, false) {
@@ -1401,6 +1450,7 @@ $bolts-selectors:                              false !default;
  * 
  * Matches if Bolts has detected any hover capability
  */
+
 @mixin hover() {
 	@include state('detect-hover') {
 		@content;
@@ -1413,6 +1463,7 @@ $bolts-selectors:                              false !default;
  * 
  * Matches if Bolts has not detected any hover capability
  */
+
 @mixin no-hover() {
 	@include state('detect-hover', false) {
 		@content;
