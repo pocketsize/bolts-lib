@@ -55,6 +55,7 @@ $bolts-default-responsive-font-size-ratio:     false !default;
 
 $bolts-breakpoints:                            false !default;
 $bolts-selectors:                              false !default;
+$bolts-easings:                                false !default;
 
 /******************************
  * Internal utility functions *
@@ -220,61 +221,32 @@ $bolts-selectors:                              false !default;
 }
 
 
-/*************************
- * Misc helper functions *
- *************************/
+/********************
+ * Helper functions *
+ ********************/
 
 
 /**
  * ease()
  *
  * Returns a cubic-bezier with the specified easing
+ * If a named easing if supplied, it looks for easings defined in $bolts-easings, otherwise the supplied value is used
  *
- * @param {string} $easing-name
+ * @param {string} $easing
  *
- * @returns {string} 
+ * @returns {string}
  */
 
-@function ease($easing-name: false) {
-	$easings: (
-		linear:      "0.25, 0.25, 0.75, 0.75",
-		ease:        "0.25, 0.1, 0.25, 1",
-		ease-in:     "0.42, 0, 1, 1",
-		ease-out:    "0, 0, 0.58, 1",
-		ease-in-out: "0.42, 0, 0.58, 1",
+@function ease($easing) {
+	$easings: $bolts-easings;
+	@if ($easings == false) { $easings: (); }
 
-		inQuad:      "0.55, 0.085, 0.68, 0.53",
-		inCubic:     "0.55, 0.055, 0.675, 0.19",
-		inQuart:     "0.895, 0.03, 0.685, 0.22",
-		inQuint:     "0.755, 0.05, 0.855, 0.06",
-		inSine:      "0.47, 0, 0.745, 0.715",
-		inExpo:      "0.95, 0.05, 0.795, 0.035",
-		inCirc:      "0.6, 0.04, 0.90, 0.335",
-		inBack:      "0.6, -0.28, 0.735, 0.045",
+	@if ($easing != false) {
+		@if (map-get($easings, $easing)) {
+			$easing: cubic-bezier(unquote(map-get($easings, $easing)));
+		}
 
-		outQuad:     "0.25, 0.46, 0.45, 0.94",
-		outCubic:    "0.215, 0.61, 0.355, 1",
-		outQuart:    "0.165, 0.84, 0.44, 1",
-		outQuint:    "0.23, 1, 0.32, 1",
-		outSine:     "0.39, 0.575, 0.565, 1",
-		outExpo:     "0.19, 1, 0.22, 1",
-		outCirc:     "0.075, 0.82, 0.165, 1",
-		outBack:     "0.175, 0.885, 0.32, 1.275",
-
-		inOutQuad:   "0.455, 0.03, 0.515, 0.955",
-		inOutCubic:  "0.645, 0.045, 0.355, 1",
-		inOutQuart:  "0.77, 0, 0.175, 1",
-		inOutQuint:  "0.86, 0, 0.07, 1",
-		inOutSine:   "0.445, 0.05, 0.55, 0.95",
-		inOutExpo:   "10, 0, 0, 1",
-		inOutCirc:   "0.785, 0.135, 0.15, 0.86",
-		inOutBack:   "0.68, -0.55, 0.265, 1.55",
-
-		bSwing:      "0.56, 0.05, 0.12, 1"
-	);
-
-	@if ($easing-name != false) {
-		@return cubic-bezier(unquote(map-get($easings, $easing-name)));
+		@return $easing;
 	}
 }
 
