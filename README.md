@@ -1,13 +1,67 @@
 # Bolts 
-*v1.0.4*
+*1.0.4*
 
-Bolts is a collection of practical Sass mixins and JS functions helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that does the things you're tired of.
+Bolts is a front-end helper library, consisting of practical Sass mixins and functions, along with a collection of JavaScript functions, helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that takes care of the things you're tired of doing.
 
-Bolts does not output any unnessecary styles and all functions can be loaded separately through ES6 imports, making its footprint as tiny as possible.
+Bolts doesn't output any unnecessary styles, and all JavaScript functions can be loaded separately through ES6+ imports, making its footprint as tiny as possible.
 
-### Installation
+## Installation
 
-*Installation is currently not documented.*
+### npm
+
+`npm i bolts-lib`
+
+### yarn
+
+`yarn add bolts-lib`
+
+## Sass
+
+### Usage
+
+#### Including Bolts in your Sass files
+
+`@import '~bolts-lib/src/sass/bolts';`
+
+#### Configuration variables
+
+Define any of the following variables before including Bolts to set default options for many of the mixins and functions.
+
+| Variable name                                 | Default value | Example value          | Description                                                                                     |
+| --------------------------------------------- |-------------- | ---------------------- | ----------------------------------------------------------------------------------------------- |
+| $bolts-reset-focus-styles                     | `false`       | `true`                 | Removes outline on `:focus` state                                                               |
+| $bolts-reset-list-styles                      | `false`       | `true`                 | Resets `list-style` on all `<ul>` and `<ol>` elements                                           |
+| $bolts-reset-legacy-element-styles            | `false`       | `true`                 | Resets styles on some deprecated elements (such as font, marquee, blink, nobr and more          |
+| $bolts-default-sticky-footer-wrapper-selector | `false`       | `'> *:first-child'`    | Selector for wrapper (content without footer) used by sticky-footer mixin                       |
+| $bolts-default-sticky-footer-footer-selector  | `false`       | `'> footer'`           | Selector for footer used by sticky-footer mixin                                                 |
+| $bolts-default-pseudo                         | `false`       | `before`               | Pseudo selector used by aspect-ratio, clear and vertical-align mixins if argument is not passed |
+| $bolts-default-font-path                      | `false`       | `'../fonts'`           | `$path` used by font mixin if argument is not passed                                            |
+| $bolts-default-container-width                | `false`       | `90%`                  | `$width` used by container mixin if argument is not passed                                      |
+| $bolts-default-container-max-width            | `false`       | `1080px`               | `$max-width` used by container mixin if argument is not passed                                  |
+| $bolts-default-container-align                | `false`       | `center`               | '$align' used by container mixin if argument is not passed                                      |
+| $bolts-default-inline-layout-align            | `false`       | `top`                  | `$align` used by inline-layout mixin if argument is not passed                                  |
+| $bolts-default-inline-layout-gutters          | `false`       | `20px`                 | `$gutters` used by inline-layout mixin if argument is not passed                                |
+| $bolts-default-flex-layout-align              | `false`       | `top`                  | `$align` used by flex-layout mixin if argument is not passed                                    |
+| $bolts-default-flex-layout-gutters            | `false`       | `20px`                 | `$gutters` used by flex-layout mixin if argument is not passed                                  |
+| $bolts-default-background-image               | `false`       | `'../images/bg.jpg'`   | `$image` used by background mixin if argument is not passed                                     |
+| $bolts-default-background-size                | `false`       | `cover`                | `$size` used by backgound mixin if argument is not passed                                       |
+| $bolts-default-background-position            | `false`       | `50% 50%`              | `$position` used by backgound mixin if argument is not passed                                   |
+| $bolts-default-background-repeat              | `false`       | `repeat`               | `$repeat` used by backgound mixin if argument is not passed                                     |
+| $bolts-default-background-attachment          | `false`       | `fixed`                | `$attachment` used by backgound mixin if argument is not passed                                 |
+| $bolts-default-background-color               | `false`       | `#ddd`                 | `$color` used by backgound mixin if argument is not passed                                      |
+| $bolts-default-transition-property            | `false`       | `opacity`              | `$property` used by transition mixin if argument is not passed                                  |
+| $bolts-default-transition-duration            | `false`       | `0.2s`                 | `$duration` used by transition mixin if argument is not passed                                  |
+| $bolts-default-transition-easing              | `false`       | `ease-in-out`          | `$easing` used by transition mixin if argument is not passed                                    |
+| $bolts-default-transition-delay               | `false`       | `0.1s`                 | `$delay` used by transition mixin if argument is not passed                                     |
+| $bolts-default-transition-queue               | `false`       | `true`                 | Enables queue with default property on transition mixin unless overwritten                      |
+| $bolts-default-transition-queue-property      | `false`       | `visibility`           | `$queue` (property) used by transition mixin if argument is not passed                          |
+| $bolts-default-transition-queue-duration      | `false`       | `0s`                   | `$queue-duration` used by transition mixin if argument is not passed                            |
+| $bolts-default-transition-queue-easing        | `false`       | `linear`               | `$queue-easing` used by transition mixin if argument is not passed                              |
+| $bolts-default-auto-col-min                   | `false`       | 1                      | `$min` (minimum amount of columns) used by auto-col mixin if argument is not passed             |
+| $bolts-default-auto-col-max                   | `false`       | 12                     | `$max` (maximum amount of columns) used by auto-col mixin if argument is not passed             |
+| $bolts-default-responsive-font-size-ratio     | `false`       | 1.6                    | `$ratio` used by responsive-font-size mixin if argument is not passed                           |
+| $bolts-breakpoints                            | `false`       | `(medium: 500px)`      | Breakpoints that can be accessed by the width and height functions when writing media queries   |
+| $bolts-selectors                              | `false`       | `(headings: 'h1, h2')` | Map containing element collections that can be accessed by the `select` mixin                   |
 
 <br>
 
@@ -15,62 +69,7 @@ Bolts does not output any unnessecary styles and all functions can be loaded sep
 
 <br>
 
-#### All config variables
-The available options are:
-
-| Variable name                                 | Example value           | Description                                                                                     |
-| --------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------- |
-| $bolts-reset-focus-styles                     | `true`                  | Removes outline on `:focus` state                                                               |
-| $bolts-reset-list-styles                      | `true`                  | Resets `list-style` on all `<ul>` and `<ol>` elements                                           |
-| $bolts-reset-legacy-element-styles            | `true`                  | Resets styles on some deprecated elements (such as font, marquee, blink, nobr and more          |
-| $bolts-default-sticky-footer-wrapper-selector | `'> *:first-child'`     | Selector for wrapper (content without footer) used by sticky-footer mixin                       |
-| $bolts-default-sticky-footer-footer-selector  | `'> footer'`            | Selector for footer used by sticky-footer mixin                                                 |
-| $bolts-default-pseudo                         | `before`                | Pseudo selector used by aspect-ratio, clear and vertical-align mixins if argument is not passed |
-| $bolts-default-font-path                      | `'../fonts'`            | `$path` used by font mixin if argument is not passed                                            |
-| $bolts-default-container-width                | `90%`                   | `$width` used by container mixin if argument is not passed                                      |
-| $bolts-default-container-max-width            | `1080px`                | `$max-width` used by container mixin if argument is not passed                                  |
-| $bolts-default-container-align                | `center`                | '$align' used by container mixin if argument is not passed                                      |
-| $bolts-default-inline-layout-align            | `top`                   | `$align` used by inline-layout mixin if argument is not passed                                  |
-| $bolts-default-inline-layout-gutters          | `20px`                  | `$gutters` used by inline-layout mixin if argument is not passed                                |
-| $bolts-default-flex-layout-align              | `top`                   | `$align` used by flex-layout mixin if argument is not passed                                    |
-| $bolts-default-flex-layout-gutters            | `20px`                  | `$gutters` used by flex-layout mixin if argument is not passed                                  |
-| $bolts-default-background-image               | `'../images/bg.jpg'`    | `$image` used by background mixin if argument is not passed                                     |
-| $bolts-default-background-size                | `cover`                 | `$size` used by backgound mixin if argument is not passed                                       |
-| $bolts-default-background-position            | `50% 50%`               | `$position` used by backgound mixin if argument is not passed                                   |
-| $bolts-default-background-repeat              | `repeat`                | `$repeat` used by backgound mixin if argument is not passed                                     |
-| $bolts-default-background-attachment          | `fixed`                 | `$attachment` used by backgound mixin if argument is not passed                                 |
-| $bolts-default-background-color               | `#ddd`                  | `$color` used by backgound mixin if argument is not passed                                      |
-| $bolts-default-transition-property            | `opacity`               | `$property` used by transition mixin if argument is not passed                                  |
-| $bolts-default-transition-duration            | `0.2s`                  | `$duration` used by transition mixin if argument is not passed                                  |
-| $bolts-default-transition-easing              | `ease-in-out`           | `$easing` used by transition mixin if argument is not passed                                    |
-| $bolts-default-transition-delay               | `0.1s`                  | `$delay` used by transition mixin if argument is not passed                                     |
-| $bolts-default-transition-queue               | `true`                  | Enables queue with default property on transition mixin unless overwritten                      |
-| $bolts-default-transition-queue-property      | `visibility`            | `$queue` (property) used by transition mixin if argument is not passed                          |
-| $bolts-default-transition-queue-duration      | `0s`                    | `$queue-duration` used by transition mixin if argument is not passed                            |
-| $bolts-default-transition-queue-easing        | `linear`                | `$queue-easing` used by transition mixin if argument is not passed                              |
-| $bolts-default-auto-col-min                   | 1                       | `$min` (minimum amount of columns) used by auto-col mixin if argument is not passed             |
-| $bolts-default-auto-col-max                   | 12                      | `$max` (maximum amount of columns) used by auto-col mixin if argument is not passed             |
-| $bolts-default-responsive-font-size-ratio     | 1.6                     | `$ratio` used by responsive-font-size mixin if argument is not passed                           |
-| $bolts-breakpoints                            | `(medium: 500px)`       | Breakpoints that can be accessed by the width and height functions when writing media queries   |
-| $bolts-selectors                              | `(headings: 'h1, h2')`  | Map containing element collections that can be accessed by the `select` mixin                   |
-
-<br>
-
-------------
-
-<br>
-
-### JavaScript setup
-
-*JavaScript setup currently has no documentation.*
-
-<br>
-
-------------
-
-<br>
-
-## Sass functions
+## Functions
 
 ### Breakpoint
 
@@ -141,7 +140,7 @@ Function to run in your `@media` queries to target retina screens.
 
 - `ease()`
 
-*This function currently has no description*
+Returns a cubic-bezier with the specified easing.
 
 | Name         | Accepted values                                  | Description                                        |
 | ------------ | ------------------------------------------------ | -------------------------------------------------- |
@@ -149,11 +148,11 @@ Function to run in your `@media` queries to target retina screens.
 
 <br>
 
-## Sass mixins
-
 ------------
 
 <br>
+
+## Mixins
 
 ### Reset
 
@@ -161,7 +160,6 @@ Function to run in your `@media` queries to target retina screens.
 
 *This mixin currently has no description*
 
-<br>
 
 **Usage:**
 
@@ -169,7 +167,6 @@ Function to run in your `@media` queries to target retina screens.
 // This mixin currently has no example
 ```
 
-<br>
 
 **Arguments:**
 
@@ -180,17 +177,12 @@ Function to run in your `@media` queries to target retina screens.
 
 <br>
 
-------------
-
-<br>
 
 ### Sticky footer
 
 - `sticky-footer()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -203,8 +195,6 @@ Function to run in your `@media` queries to target retina screens.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name              | Accepted values | Default value | Description |
@@ -215,18 +205,12 @@ Function to run in your `@media` queries to target retina screens.
 
 <br>
 
-------------
 
-<br>
-
-
-### Font face
+### Fonts
 
 - `font()`
 
 Simpler declaration of `@font-face`s (include this before any output, including the reset and boilerplate).
-
-<br>
 
 **Usage**:
 
@@ -250,8 +234,6 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 )
 ```
 
-<br>
-
 **Arguments:**
 
 | Name        | Example values                                                     | Description                                                                                                              |
@@ -265,11 +247,9 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 | $svg-id     | `latoregular`                                                      | Defaults to filename                                                                                                     |
 | $variations | `( (filename: Lato-Regular), (filename: Lato-Bold, weight: 700) )` | List of maps with font variations. You only need to enter the properties that deviate from the defaults.                 |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Responsive font size
 
@@ -277,15 +257,11 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -298,17 +274,12 @@ Simpler declaration of `@font-face`s (include this before any output, including 
 
 <br>
 
-------------
-
-<br>
 
 ### Container
 
 - `container()`
 
 Sets basic container styling on element.
-
-<br>
 
 **Usage:**
 
@@ -320,8 +291,6 @@ Sets basic container styling on element.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name        | Accepted values                   | Default value                                 | Description                                           |
@@ -330,19 +299,15 @@ Sets basic container styling on element.
 | $max-width  | CSS length unit                   | Value of `$bolts-default-container-max-width` | Max width of container                                |
 | align       | `left`, `center`, `right`         | Value of `$bolts-default-container-align`     | Container alignment                                   |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Clearing whitespace
 
 - `clear-whitespace()`
 
 Eliminates the space between `inline-block` elements using `font-size: 0`.
-
-<br>
 
 **Usage:**
 
@@ -358,27 +323,21 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name       | Accepted values | Default value | Description                                         |
 | ---------- | --------------- | ------------- |  -------------------------------------------------- |
 | $font-size | CSS length unit | `1rem`        | Font size to reset child elements to (can't use em) |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Overlay
 
 - `overlay()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -395,27 +354,21 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name         | Accepted values | Description                                                       |
 | ------------ | --------------- | ----------------------------------------------------------------- |
 | $force-size  | Bool            | sets width and height to 100% (necessary when applied to iframes) |
 
-<br>
-
-------------
 
 <br>
 
-### Background shorthand
+
+### Backgrounds
 
 - `background()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -431,27 +384,21 @@ Eliminates the space between `inline-block` elements using `font-size: 0`.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name | Accepted values | Default value | Description |
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Transitions
 
 - `transition()`
 
 Sets transition with pre set vales for duration and easing. Second argument queues a second transition after the initial transition is done.
-
-<br>
 
 **Usage:**
 
@@ -482,15 +429,11 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 }
 ```
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -498,11 +441,9 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Transition height
 
@@ -510,15 +451,11 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -526,19 +463,15 @@ Sets transition with pre set vales for duration and easing. Second argument queu
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Element aspect ratio
 
 - `aspect-ratio()`
 
 Set an aspect ratio for a block element.
-
-<br>
 
 **Usage:**
 
@@ -549,8 +482,6 @@ Set an aspect ratio for a block element.
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name         | Accepted values | Description                                        |
@@ -558,19 +489,15 @@ Set an aspect ratio for a block element.
 | $x           | Number          | What width value to base the ratio calculation on  |
 | $y           | Number          | What height value to base the ratio calculation on |
 
-<br>
-
-------------
 
 <br>
 
-### Classic clear
+
+### Classic clearfix
 
 - `clear()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -578,19 +505,15 @@ Set an aspect ratio for a block element.
 // This mixin currently has no example
 ```
 
-<br>
-
 **Arguments:**
 
 | Name | Accepted values | Default value | Description |
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Element centering
 
@@ -598,7 +521,7 @@ Set an aspect ratio for a block element.
 
 Center an element inside it's closest relatively positioned parent in either, or both direction (vertical/horizontal)
 
-<br>
+> **Known issue:** Some browsers positions the element "between pixels", making it appear blurred. Use `transform-style: preserve-3d` on the parent to avoid this. 
 
 **Usage:**
 
@@ -614,31 +537,21 @@ Center an element inside it's closest relatively positioned parent in either, or
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name         | Accepted values                  | Default value | Description                        |
 | ------------ | -------------------------------- | ------------- | ---------------------------------- |
 | $direction   | `both`, `vertical`, `horizontal` | `both`        | What axis to center the element on |
 
-<br>
-
-> **Known issue:** Some browsers positions the element "between pixels", making it appear blurred. Use `transform-style: preserve-3d` on the parent to avoid this. 
 
 <br>
 
-------------
-
-<br>
 
 ### Vertical alignment
 
 - `vertical-align()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -664,28 +577,21 @@ Center an element inside it's closest relatively positioned parent in either, or
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name | Accepted values | Default value | Description |
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
 
 
-### Making fonts crisper
+### Antialiasing
 
 - `antialias()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -696,17 +602,12 @@ Center an element inside it's closest relatively positioned parent in either, or
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name    | Accepted values       | Description                                                                  |
 | ------- | --------------------- | ---------------------------------------------------------------------------- |
 | $method | default, none, reset  | Sets font smoothing (webkit and moz-osx), defaults to antialiased/grayscale  |
 
-<br>
-
-------------
 
 <br>
 
@@ -717,8 +618,6 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
@@ -727,19 +626,15 @@ Center an element inside it's closest relatively positioned parent in either, or
 }
 ```
 
-<br>
-
-------------
 
 <br>
+
 
 ### Grayscale
 
 - `grayscale()`
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -753,11 +648,9 @@ Center an element inside it's closest relatively positioned parent in either, or
 }
 ```
 
-<br>
-
-------------
 
 <br>
+
 
 ### Layouting with inline blocks
 
@@ -766,8 +659,6 @@ Center an element inside it's closest relatively positioned parent in either, or
 - `inline-column()`
 
 The inline-layout component is another take on layouts, where the columns are `inline-block` elements, which eliminates the need for rows, and makes them respond to text-align. This is especially useful for dynamic content.
-
-<br>
 
 **Usage:**
 
@@ -804,8 +695,6 @@ SCSS
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name     | Accepted values                   | Default value | Description            |
@@ -814,11 +703,9 @@ SCSS
 | $col     | String                            | `'> *'`       | Selector used to find a direct descendant column element |
 
 
-<br>
-
-------------
 
 <br>
+
 
 ### Layouting with flex
 
@@ -828,8 +715,6 @@ SCSS
 
 
 *This mixin currently has no description*
-
-<br>
 
 **Usage:**
 
@@ -845,19 +730,15 @@ SCSS
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Stagger delays
 
 - `stagger-delay()`
 
 Gives every selected element an increased delay based on its order in the DOM. Example usage is for making cascading transitions and animations.
-
-<br>
 
 **Usage**:
 
@@ -875,7 +756,6 @@ Gives every selected element an increased delay based on its order in the DOM. E
   }
 }
 ```
-<br>
  
 **Arguments:**
  
@@ -888,19 +768,15 @@ Gives every selected element an increased delay based on its order in the DOM. E
 | $modifier    | Number                     | `0`           | A modifier to create non-linear iterations. General sweetspot is somewhere between 1 and 2.    |
 | $direction   | `forwards`, `backwards`    | `forwards`    | Specifies if the delay should be added from the beginning or the end of the selected elements. |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Auto columns
 
 - `auto-col()`
 
 Sets widths to dynamically fit all columns in one row
-
-<br>
 
 **Usage:**
 
@@ -916,27 +792,21 @@ Sets widths to dynamically fit all columns in one row
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name | Accepted values | Default value | Description |
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Reversing columns
 
 - `reverse()`
 
 Reverse the order of an element's children without the need for duplicate markup.
-
-<br>
 
 **Usage:**
 
@@ -952,11 +822,9 @@ Reverse the order of an element's children without the need for duplicate markup
 }
 ```
 
-<br>
-
-------------
 
 <br>
+
 
 ### States
 
@@ -964,15 +832,11 @@ Reverse the order of an element's children without the need for duplicate markup
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -980,11 +844,9 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Selecting elements
 
@@ -992,15 +854,11 @@ Reverse the order of an element's children without the need for duplicate markup
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1008,11 +866,9 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Styling input placeholders
 
@@ -1020,15 +876,11 @@ Reverse the order of an element's children without the need for duplicate markup
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1036,27 +888,21 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
 
-### Match element amount
+
+### Select elements of a given amount
 
 - `count()`
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1064,27 +910,21 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
 
-### Match window resize
+
+### Selector mathing a resizing window
 
 - `resizing()`
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1092,11 +932,9 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Match image orientation
 
@@ -1104,15 +942,11 @@ Reverse the order of an element's children without the need for duplicate markup
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1120,11 +954,9 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Hover
 
@@ -1133,15 +965,11 @@ Reverse the order of an element's children without the need for duplicate markup
 
 *This mixin currently has no description*
 
-<br>
-
 **Usage:**
 
 ```scss
 // This mixin currently has no example
 ```
-
-<br>
 
 **Arguments:**
 
@@ -1149,12 +977,19 @@ Reverse the order of an element's children without the need for duplicate markup
 | ---- | ----------------| ------------- | ----------- |
 | -    | -               | -             | -           |
 
+
 <br>
 
 ------------
 
 <br>
 
-## JS Functions
+## JavaScript
+
+### Setup
+
+*JavaScript setup currently has no documentation.*
+
+### Functions
 
 *Javascript functionality currently has no documentation*
