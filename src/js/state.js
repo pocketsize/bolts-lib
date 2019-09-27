@@ -75,9 +75,10 @@ function get(key = null, node = false) {
  * @param {string} key
  * @param {(string|number|boolean)} value
  * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {boolean} setDOM - Attach the state as a data attribute in the DOM
  */
 
-function set(key, value = true, node = false) {
+function set(key, value = true, node = false, setDOM = true) {
 	if (
 		   typeof value != 'number'
 		&& typeof value != 'string'
@@ -106,7 +107,9 @@ function set(key, value = true, node = false) {
 			node: node
 		})
 
-		setDOMState(node)
+		if (setDOM) {
+			setDOMState(key, value, node)
+		}
 	} else {
 		let i = state._store.global.length - 1
 
@@ -123,7 +126,9 @@ function set(key, value = true, node = false) {
 			value: value
 		})
 
-		setDOMState()
+		if (setDOM) {
+			setDOMState(key, value)
+		}
 	}
 
 	return
@@ -152,7 +157,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState(node)
+		setDOMState(key, value, node)
 	} else {
 		let i = state._store.global.length - 1
 
@@ -164,7 +169,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState()
+		setDOMState(key, value)
 	}
 
 	return
@@ -247,46 +252,26 @@ function toggle(key, value = [true, false], node = false) {
  * @param {Node} node - Defaults to HTML (global state) if not set
  */
 
-function setDOMState(node = false) {
-	let states
+function setDOMState(key, value = false, node = false) {
+	if (!node) {
+		let html = document.getElementsByTagName('html')
 
-	if (!!node) {
-		states = []
+		if (!html.length) {
+			throw new Error('setDOMState: Could not find html node')
+		}
 
-		state._store.local.forEach(function(state) {
-			if (state.node == node) {
-				states.push(state)
-			}
-		})
+		node = html[0]
+	}
+	
+	if (!!value || value === 0) {
+		node.setAttribute('data-bolts-state-' + key, value)
 	} else {
-		states = state._store.global
-		node = document.getElementsByTagName('html')[0]
+		node.removeAttribute('data-bolts-state-' + key)
 	}
 
-	let attributes = node.attributes
-
-	if (!!attributes) {
-		attributes = Array.prototype.slice.call(attributes)
-
-		attributes.forEach(function(attribute) {
-			if (attribute.nodeName.indexOf('data-bolts-state') === 0) {
-				node.removeAttribute(attribute.nodeName)
-			}
-		})
+	if (value === false) {
+		node.removeAttribute('data-bolts-state-' + key)
 	}
-
-	states.forEach(function(state) {
-		let attribute = state.key
-		let value = state.value
-
-		if (value === true) {
-			value = ''
-		}
-
-		if (!!state.value || state.value === 0) {
-			node.setAttribute('data-bolts-state-' + attribute, value)
-		}
-	})
 }
 
 
@@ -297,10 +282,9 @@ function setDOMState(node = false) {
  */
 
 function getDOMState() {
-	let tempState = state._store
-
 	function getNodeState(node, returnNode = true) {
 		let attributes = node.attributes
+
 		if (!attributes) {
 			return false
 		}
@@ -337,14 +321,13 @@ function getDOMState() {
 	let globalNode = document.getElementsByTagName('html')
 
 	if (globalNode && globalNode.length) {
-		let globalDOMState = getNodeState(globalNode[0], false)
-		if (!globalDOMState) {
-			globalDOMState = []
-		}
+		let globalNodeState = getNodeState(globalNode[0], false)
 
-		globalDOMState.forEach(function(globalState) {
-			tempState.global = tempState.global.concat(globalState)
-		})
+		if (globalNodeState) {
+			globalNodeState.forEach(function(globalState) {
+				state.set(globalState.key, globalState.value, null, false)
+			})
+		}
 	}
 
 	let localNodes = document.querySelectorAll('*:not(html)')
@@ -352,12 +335,13 @@ function getDOMState() {
 
 	localNodes.forEach(function(node) {
 		let nodeState = getNodeState(node)
+
 		if (nodeState) {
-			tempState.local = tempState.local.concat(nodeState)
+			nodeState.forEach(function (localState) {
+				state.set(localState.key, localState.value, node, false)
+			})
 		}
 	})
-
-	state._store = tempState
 }
 
 export default state

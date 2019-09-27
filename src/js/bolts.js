@@ -19,11 +19,11 @@ function init(config = {}) {
 
     config = Object.assign({}, defaults, config)
 
+    state.getDOMState()
+
     detect.hoverCapability(config.detectHoverThreshold)
     detect.imageOrientation()
     detect.resizeEvents()
-
-    state.getDOMState()
 }
 
 export default bolts
