@@ -1449,3 +1449,22 @@ $bolts-easings:                                false !default;
 		@content;
 	}
 }
+
+
+/**
+ * line-clamp() 
+ * 
+ * A line clamp mixin which truncates text at the selected number of lines.
+ * The mixin needs to be set directly on the element containing the text.
+ *
+ * This mixin is not supported by IE 11 and Opera Mobile.
+ */
+
+ @mixin line-clamp( $rows: 0 ) {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: $rows;
+	-webkit-box-orient: vertical;
+}
