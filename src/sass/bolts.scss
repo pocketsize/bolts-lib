@@ -129,22 +129,25 @@ $bolts-easings:                                false !default;
  * breakpoint()
  * 
  * Helper function for writing cleaner responsive media queries
+ * If a named breakpoint if supplied, it looks for breakpoints defined in $bolts-breakpoints, otherwise the supplied value is used
  *
  * @param {number} $from - CSS length unit required
  * @param {number} $to - CSS length unit required
  * @param {string} $property - "height" or "width"
  */
-
+ 
 @function breakpoint(
 	$from:     false,
 	$to:       false,
 	$property: false
 ) {
-	@if ($bolts-breakpoints == false) { $bolts-breakpoints: (); }
+	$breakpoints: $bolts-breakpoints;
+
+	@if ($breakpoints == false) { $breakpoints: (); }
 	@if ($property != height) { $property: width; }
 
-	@if (map-get($bolts-breakpoints, $from)) { $from: map-get($bolts-breakpoints, $from) }
-	@if (map-get($bolts-breakpoints, $to))   { $to:   map-get($bolts-breakpoints, $to)   }
+	@if (map-get($breakpoints, $from)) { $from: map-get($breakpoints, $from) }
+	@if (map-get($breakpoints, $to))   { $to:   map-get($breakpoints, $to)   }
 
 	@if ($from != false) {
 		@if (type-of($from) != number or type-of($from) == number and unitless($from)) {
