@@ -27,42 +27,42 @@ Bolts doesn't output any unnecessary styles, and all JavaScript functions can be
 
 Define any of the following variables before including Bolts to set default options for many of the mixins and functions.
 
-| Variable name                                 | Default value | Example value                                  | Description                                                                                     |
-| --------------------------------------------- |-------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| $bolts-reset-focus-styles                     | `false`       | `true`                                        | Removes outline on `:focus` state                                                               |
-| $bolts-reset-list-styles                      | `false`       | `true`                                        | Resets `list-style` on all `<ul>` and `<ol>` elements                                           |
-| $bolts-reset-legacy-element-styles            | `false`       | `true`                                        | Resets styles on some deprecated elements (such as font, marquee, blink, nobr and more          |
-| $bolts-default-sticky-footer-wrapper-selector | `false`       | `'> *:first-child'`                           | Selector for wrapper (content without footer) used by sticky-footer mixin                       |
-| $bolts-default-sticky-footer-footer-selector  | `false`       | `'> footer'`                                  | Selector for footer used by sticky-footer mixin                                                 |
-| $bolts-default-pseudo                         | `false`       | `before`                                      | Pseudo selector used by aspect-ratio, clear and vertical-align mixins if argument is not passed |
-| $bolts-default-font-path                      | `false`       | `'../fonts'`                                  | `$path` used by font mixin if argument is not passed                                            |
-| $bolts-default-container-width                | `false`       | `90%`                                         | `$width` used by container mixin if argument is not passed                                      |
-| $bolts-default-container-max-width            | `false`       | `1080px`                                      | `$max-width` used by container mixin if argument is not passed                                  |
-| $bolts-default-container-align                | `false`       | `center`                                      | '$align' used by container mixin if argument is not passed                                      |
-| $bolts-default-inline-layout-align            | `false`       | `top`                                         | `$align` used by inline-layout mixin if argument is not passed                                  |
-| $bolts-default-inline-layout-gutters          | `false`       | `20px`                                        | `$gutters` used by inline-layout mixin if argument is not passed                                |
-| $bolts-default-flex-layout-align              | `false`       | `top`                                         | `$align` used by flex-layout mixin if argument is not passed                                    |
-| $bolts-default-flex-layout-gutters            | `false`       | `20px`                                        | `$gutters` used by flex-layout mixin if argument is not passed                                  |
-| $bolts-default-background-image               | `false`       | `'../images/bg.jpg'`                          | `$image` used by background mixin if argument is not passed                                     |
-| $bolts-default-background-size                | `false`       | `cover`                                       | `$size` used by backgound mixin if argument is not passed                                       |
-| $bolts-default-background-position            | `false`       | `50% 50%`                                     | `$position` used by backgound mixin if argument is not passed                                   |
-| $bolts-default-background-repeat              | `false`       | `repeat`                                      | `$repeat` used by backgound mixin if argument is not passed                                     |
-| $bolts-default-background-attachment          | `false`       | `fixed`                                       | `$attachment` used by backgound mixin if argument is not passed                                 |
-| $bolts-default-background-color               | `false`       | `#ddd`                                        | `$color` used by backgound mixin if argument is not passed                                      |
-| $bolts-default-transition-property            | `false`       | `opacity`                                     | `$property` used by transition mixin if argument is not passed                                  |
-| $bolts-default-transition-duration            | `false`       | `0.2s`                                        | `$duration` used by transition mixin if argument is not passed                                  |
-| $bolts-default-transition-easing              | `false`       | `ease-in-out`                                 | `$easing` used by transition mixin if argument is not passed                                    |
-| $bolts-default-transition-delay               | `false`       | `0.1s`                                        | `$delay` used by transition mixin if argument is not passed                                     |
-| $bolts-default-transition-queue               | `false`       | `true`                                        | Enables queue with default property on transition mixin unless overwritten                      |
-| $bolts-default-transition-queue-property      | `false`       | `visibility`                                  | `$queue` (property) used by transition mixin if argument is not passed                          |
-| $bolts-default-transition-queue-duration      | `false`       | `0s`                                          | `$queue-duration` used by transition mixin if argument is not passed                            |
-| $bolts-default-transition-queue-easing        | `false`       | `linear`                                      | `$queue-easing` used by transition mixin if argument is not passed                              |
-| $bolts-default-auto-col-min                   | `false`       | 1                                             | `$min` (minimum amount of columns) used by auto-col mixin if argument is not passed             |
-| $bolts-default-auto-col-max                   | `false`       | 12                                            | `$max` (maximum amount of columns) used by auto-col mixin if argument is not passed             |
-| $bolts-default-responsive-font-size-ratio     | `false`       | 1.6                                           | `$ratio` used by responsive-font-size mixin if argument is not passed                           |
-| $bolts-breakpoints                            | `false`       | `(medium: 500px)`                             | Breakpoints that can be accessed by the width and height functions when writing media queries   |
-| $bolts-selectors                              | `false`       | `(headings: 'h1, h2')`                        | Map containing element collections that can be accessed by the `select` mixin                   |
-| $bolts-easings                                | `false`       | `( ease-in-quad: '0.55, 0.085, 0.68, 0.53' )` | Map containing element collections that can be accessed by the `select` mixin                   |
+| Variable name                                 | Example value                                 | Description                                                                                     |
+| --------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| $bolts-reset-focus-styles                     | `true`                                        | Removes outline on `:focus` state                                                               |
+| $bolts-reset-list-styles                      | `true`                                        | Resets `list-style` on all `<ul>` and `<ol>` elements                                           |
+| $bolts-reset-legacy-element-styles            | `true`                                        | Resets styles on some deprecated elements (such as font, marquee, blink, nobr and more          |
+| $bolts-default-sticky-footer-wrapper-selector | `'> *:first-child'`                           | Selector for wrapper (content without footer) used by sticky-footer mixin                       |
+| $bolts-default-sticky-footer-footer-selector  | `'> footer'`                                  | Selector for footer used by sticky-footer mixin                                                 |
+| $bolts-default-pseudo                         | `before`                                      | Pseudo selector used by aspect-ratio, clear and vertical-align mixins if argument is not passed |
+| $bolts-default-font-path                      | `'../fonts'`                                  | `$path` used by font mixin if argument is not passed                                            |
+| $bolts-default-container-width                | `90%`                                         | `$width` used by container mixin if argument is not passed                                      |
+| $bolts-default-container-max-width            | `1080px`                                      | `$max-width` used by container mixin if argument is not passed                                  |
+| $bolts-default-container-align                | `center`                                      | '$align' used by container mixin if argument is not passed                                      |
+| $bolts-default-inline-layout-align            | `top`                                         | `$align` used by inline-layout mixin if argument is not passed                                  |
+| $bolts-default-inline-layout-gutters          | `20px`                                        | `$gutters` used by inline-layout mixin if argument is not passed                                |
+| $bolts-default-flex-layout-align              | `top`                                         | `$align` used by flex-layout mixin if argument is not passed                                    |
+| $bolts-default-flex-layout-gutters            | `20px`                                        | `$gutters` used by flex-layout mixin if argument is not passed                                  |
+| $bolts-default-background-image               | `'../images/bg.jpg'`                          | `$image` used by background mixin if argument is not passed                                     |
+| $bolts-default-background-size                | `cover`                                       | `$size` used by backgound mixin if argument is not passed                                       |
+| $bolts-default-background-position            | `50% 50%`                                     | `$position` used by backgound mixin if argument is not passed                                   |
+| $bolts-default-background-repeat              | `repeat`                                      | `$repeat` used by backgound mixin if argument is not passed                                     |
+| $bolts-default-background-attachment          | `fixed`                                       | `$attachment` used by backgound mixin if argument is not passed                                 |
+| $bolts-default-background-color               | `#ddd`                                        | `$color` used by backgound mixin if argument is not passed                                      |
+| $bolts-default-transition-property            | `opacity`                                     | `$property` used by transition mixin if argument is not passed                                  |
+| $bolts-default-transition-duration            | `0.2s`                                        | `$duration` used by transition mixin if argument is not passed                                  |
+| $bolts-default-transition-easing              | `ease-in-out`                                 | `$easing` used by transition mixin if argument is not passed                                    |
+| $bolts-default-transition-delay               | `0.1s`                                        | `$delay` used by transition mixin if argument is not passed                                     |
+| $bolts-default-transition-queue               | `true`                                        | Enables queue with default property on transition mixin unless overwritten                      |
+| $bolts-default-transition-queue-property      | `visibility`                                  | `$queue` (property) used by transition mixin if argument is not passed                          |
+| $bolts-default-transition-queue-duration      | `0s`                                          | `$queue-duration` used by transition mixin if argument is not passed                            |
+| $bolts-default-transition-queue-easing        | `linear`                                      | `$queue-easing` used by transition mixin if argument is not passed                              |
+| $bolts-default-auto-col-min                   | 1                                             | `$min` (minimum amount of columns) used by auto-col mixin if argument is not passed             |
+| $bolts-default-auto-col-max                   | 12                                            | `$max` (maximum amount of columns) used by auto-col mixin if argument is not passed             |
+| $bolts-default-responsive-font-size-ratio     | 1.6                                           | `$ratio` used by responsive-font-size mixin if argument is not passed                           |
+| $bolts-breakpoints                            | `(medium: 500px)`                             | Breakpoints that can be accessed by the width and height functions when writing media queries   |
+| $bolts-selectors                              | `(headings: 'h1, h2')`                        | Map containing element collections that can be accessed by the `select` mixin                   |
+| $bolts-easings                                | `( ease-in-quad: '0.55, 0.085, 0.68, 0.53' )` | Map containing element collections that can be accessed by the `select` mixin                   |
 
 <br>
 
