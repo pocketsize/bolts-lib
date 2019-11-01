@@ -1,5 +1,5 @@
 # Bolts 
-*1.0.4*
+*1.0.5*
 
 Bolts is a front-end helper library, consisting of practical Sass mixins and functions, along with a collection of JavaScript functions, helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that takes care of the things you're tired of doing.
 
@@ -804,44 +804,6 @@ SCSS
 | $columns | numbers         | `false`       | Set amount of columns per row and how much space they will take |
 | $gutters | px              | `false`       | Set gutters between child elements - ex `20px`                  |
 | $align   | string          | `false`       | Set the alignment of child elements                             |
-
-
-<br>
-
-
-### Stagger delays
-
-- `stagger-delay()`
-
-Gives every selected element an increased delay based on its order in the DOM. Example usage is for making cascading transitions and animations.
-
-**Usage**:
-
-```scss
-.menu.is-open {
-
-  .menu-item {
-    transform: translateX(-50px);
-    transition: transform 300ms ease;
-
-    @include stagger-delay(
-      $increment:  50ms,
-      $iterations: 10
-    );
-  }
-}
-```
- 
-**Arguments:**
- 
-| Name         | Accepted values            | Default value | Description                                                                                    |
-| ------------ | -------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
-| $type        | `transition`, `animation`  | `transition`  | Specifies if the mixin outputs `transition-delay`or `animation-delay`.                         |
-| $start       | CSS time unit              | `0s`          | Add a delay before the incremantal-delay starts.                                               |
-| $increment   | CSS time unit              | `0s`          | The amount of time incremented for each item.                                                  |
-| $iterations  | Number                     | `0`           | Amount of iterations to output. This is needed since Sass doesn't have access to the DOM.      |
-| $modifier    | Number                     | `0`           | A modifier to create non-linear iterations. General sweetspot is somewhere between 1 and 2.    |
-| $direction   | `forwards`, `backwards`    | `forwards`    | Specifies if the delay should be added from the beginning or the end of the selected elements. |
 
 
 <br>

@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.4 | MIT License
+ * Bolts 1.0.5 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/
@@ -1231,47 +1231,6 @@ $bolts-easings:                                false !default;
 
 	@if ($vertical-gutter and $vertical-gutter != 0) {
 		margin-top: $vertical-gutter;
-	}
-}
-
-
-/**
- * stagger-delay() 
- * 
- * Delay the transition or animation of each matching element.
- *
- * @param {string} $property - "animation" or "transition"
- * @param {number} $start - Delay beginning of animation/transition, CSS time unit required
- * @param {number} $increment - Delay between each iteration
- * @param {string} $direction - "forwards" or "backwards"
- */
-
-@mixin stagger-delay(
-	$property:   false,
-	$start:      false,
-	$increment:  false,
-	$iterations: false,
-	$direction:  false,
-	$modifier:   false
-) {
-	@if ($property != animation) { $property: transition; }
-	@if ($start == false) { $start: 0s; }
-	@if ($increment == false) { $increment: 0s; }
-	@if ($iterations == false) { $iterations: 0; }
-	@if ($direction == false) { $direction: forwards; }
-	@if ($modifier == false) { $modifier: 0; }
-	
-	$base-modifier: $modifier;
-	$modifier: $modifier + 1;
-
-	@for $i from 1 through $iterations {
-		$incremented-modifier: $i * $i * $base-modifier * ($base-modifier / 2) * $i;
-	
-		@if ($direction == forwards) {
-			&:nth-of-type(#{$i}) { #{$property}-delay: $start + (($increment * $i) + $incremented-modifier); } 
-		} @else {
-			&:nth-last-of-type(#{$i}) { #{$property}-delay: $start + (($increment * $i) + $incremented-modifier); }
-		}
 	}
 }
 
