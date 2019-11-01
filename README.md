@@ -83,8 +83,6 @@ Define any of the following variables before including Bolts to set default opti
 
 Functions to run inside your `@media` queries that lets you access your defined breakpoints. It automatically compensates your pixel values to prevent duplicate properties being set.
 
-<br>
-
 **Usage**:
 
 ```scss
@@ -100,8 +98,6 @@ Functions to run inside your `@media` queries that lets you access your defined 
 }
 ```
 
-<br>
-
 **Arguments:**
 
 | Name  | Accepted values                                                | Description                                              |
@@ -109,11 +105,9 @@ Functions to run inside your `@media` queries that lets you access your defined 
 | $from | CSS length unit or key name from the `$bolts-breakpoints` map  | Sets the `min-width` or `min-height` in the media query. |
 | $to   | CSS length unit or key name from the `$bolts-breakpoints` map  | Sets the `max-width` or `max-height` in the media query. |
 
-<br>
-
-------------
 
 <br>
+
 
 ### Retina
 
@@ -131,11 +125,9 @@ Function to run in your `@media` queries to target retina screens.
 }
 ```
 
-<br>
-
-------------
 
 <br>
+
 
 ### Easings
 
@@ -588,6 +580,53 @@ Center an element inside it's closest relatively positioned parent in either, or
 
 <br>
 
+### Line clamp
+
+- `line-clamp()`
+
+*Truncate text at the selected number of lines.*
+
+**Usage:**
+
+```scss
+.excerpt {
+  @include line-clamp(3);
+}
+```
+
+**Arguments:**
+
+| Name  | Accepted values | Default value | Description                                         |
+| ----- | --------------- | ------------- | --------------------------------------------------- |                                      
+| $rows | `integer`       | 0             | If no number is specified the text is not truncated |
+
+
+<br>
+
+
+### Visually hidden
+
+- `visually-hidden()`
+
+*This mixin currently has no description*
+
+
+**Usage:**
+
+```scss
+// This mixin currently has no example
+```
+
+
+**Arguments:**
+
+| Name | Accepted values | Default value | Description |
+| ---- | ----------------| ------------- | ----------- |
+| -    | -               | -             | -           |
+
+
+<br>
+
 
 ### Antialiasing
 
@@ -614,7 +653,7 @@ Center an element inside it's closest relatively positioned parent in either, or
 <br>
 
 
-### Elastic scroll
+### Scrollable content
 
 - `scroll()`
 
@@ -627,6 +666,36 @@ Center an element inside it's closest relatively positioned parent in either, or
   @include scroll;
 }
 ```
+
+**Arguments:**
+
+| Name | Accepted values | Default value | Description |
+| ---- | ----------------| ------------- | ----------- |
+| -    | -               | -             | -           |
+
+
+<br>
+
+
+### Viewport
+
+- `viewport()`
+
+*This mixin currently has no description*
+
+**Usage:**
+
+```scss
+.page {
+  @include viewport;
+}
+```
+
+**Arguments:**
+
+| Name | Accepted values | Default value | Description |
+| ---- | ----------------| ------------- | ----------- |
+| -    | -               | -             | -           |
 
 
 <br>
@@ -716,21 +785,25 @@ SCSS
 - `flex-column()`
 
 
-*This mixin currently has no description*
+*Sets element to display: flex and set behaviour of child elements*
 
 **Usage:**
 
 ```scss
-// This mixin currently has no example
+.is-columns-4 {
+  @include flex-layout(1 1 1 1, 20px);          
+}
 ```
 
 <br>
 
 **Arguments:**
 
-| Name | Accepted values | Default value | Description |
-| ---- | ----------------| ------------- | ----------- |
-| -    | -               | -             | -           |
+| Name     | Accepted values | Default value | Description                                                     |
+| -------- | ----------------| ------------- | --------------------------------------------------------------- |
+| $columns | numbers         | `false`       | Set amount of columns per row and how much space they will take |
+| $gutters | px              | `false`       | Set gutters between child elements - ex `20px`                  |
+| $align   | string          | `false`       | Set the alignment of child elements                             |
 
 
 <br>
@@ -832,19 +905,28 @@ Reverse the order of an element's children without the need for duplicate markup
 
 - `state()`
 
-*This mixin currently has no description*
+*Matches elements based on current state.*
 
 **Usage:**
 
 ```scss
-// This mixin currently has no example
+.menu {
+  @include state('menu', false) { 
+    display: none; 
+  }  
+  @include state('menu') { 
+    display: block; 
+  }
+}
 ```
 
 **Arguments:**
 
-| Name | Accepted values | Default value | Description |
-| ---- | ----------------| ------------- | ----------- |
-| -    | -               | -             | -           |
+| Name   | Accepted values  | Default value | Description                                                                     |
+| ------ | ---------------- | ------------- | ------------------------------------------------------------------------------- |
+| $key   | `string`         | `false`       | The state to match, ex `menu`                                                   |
+| $value | `bool`, `string` | `true`        | State value to match                                                            |
+| $local | `bool`           | `false`       | If true, based on the state of the current element. If false, the global state  |
 
 
 <br>
@@ -942,7 +1024,7 @@ Reverse the order of an element's children without the need for duplicate markup
 
 - `orientation()`
 
-*This mixin currently has no description*
+*Matches elements based on detected orientation state*
 
 **Usage:**
 
@@ -952,9 +1034,9 @@ Reverse the order of an element's children without the need for duplicate markup
 
 **Arguments:**
 
-| Name | Accepted values | Default value | Description |
-| ---- | ----------------| ------------- | ----------- |
-| -    | -               | -             | -           |
+| Name         | Accepted values                   | Default value | Description                          |
+| ------------ | --------------------------------- | ------------- | ------------------------------------ |
+| $orientation | `portrait`, `landscape`, `square` | `false`       | Match the orientation of the element |
 
 
 <br>
@@ -994,4 +1076,4 @@ Reverse the order of an element's children without the need for duplicate markup
 
 ### Functions
 
-*Javascript functionality currently has no documentation*
+*JavaScript functionality currently has no documentation*
