@@ -48,6 +48,8 @@ $bolts-default-transition-queue-property:      false !default;
 $bolts-default-transition-queue-duration:      false !default;
 $bolts-default-transition-queue-easing:        false !default;
 
+$bolts-default-scroll-direction:               false !default;
+
 $bolts-default-auto-col-min:                   false !default;
 $bolts-default-auto-col-max:                   false !default;
 
@@ -293,10 +295,6 @@ $bolts-easings:                                false !default;
 
 	html {
 		text-size-adjust: 100%;
-		overflow: auto;
-		overflow-x: hidden;
-		overflow-y: scroll;
-		-ms-overflow-style: -ms-autohiding-scrollbar;
 	}
 
 	body {
@@ -386,23 +384,14 @@ $bolts-easings:                                false !default;
 	@if ($wrapper-selector == false or $footer-selector == false) {
 		@error "sticky-footer: Both $wrapper-selector and $footer-selector need to be defined";
 	}
-	
-	$formatted-wrapper-selector: '';
-
-	@if ($wrapper-selector != false and $wrapper-selector != #{&}) {
-		$formatted-wrapper-selector: ', ' + $wrapper-selector;
-	}
 
 	#{$wrapper-selector},
 	#{$footer-selector} {
 		display: table-row;
 	}
 
-	@at-root html, body {
-		height: 100%;
-	}
-
-	&#{$formatted-wrapper-selector} {
+	&,
+	#{$wrapper-selector} {
 		height: 100%;
 	}
 
@@ -861,6 +850,40 @@ $bolts-easings:                                false !default;
 
 
 /**
+ * line-clamp() 
+ * 
+ * A line clamp mixin which truncates text at the selected number of lines.
+ * The mixin needs to be set directly on the element containing the text.
+ *
+ * Not supported by IE 11 and Opera Mobile.
+ */
+
+ @mixin line-clamp($rows: 0) {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: $rows;
+	-webkit-box-orient: vertical;
+}
+
+
+/**
+ * visually-hidden() 
+ * 
+ * Hide content visually, but allow the text to be read by screen readers,
+ * unlike display: none
+ */
+
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+
+/**
  * antialias() 
  * 
  * Font smoothing, best used with light text on dark backgrounds
@@ -885,19 +908,60 @@ $bolts-easings:                                false !default;
 /**
  * scroll() 
  * 
- * Make element scrollable and apply elastic scroll on touch devices
+ * Make element scrollable, apply elastic scroll on webkit touch devices,
+ * plus use an auto hiding scrollbar in IE 10/11 and Edge
+ *
+ * @param {string} $direction - "vertical", "horizontal" or "both" (default)
  */
 
-@mixin scroll {
-	overflow: auto;
-	-webkit-overflow-scrolling: touch;
+@mixin scroll($direction: false) {
+	@if ($direction == false and $bolts-default-scroll-direction) {
+		$direction: $bolts-default-scroll-direction;
+	}
+
+	@if ($direction == none) {
+		overflow: hidden;
+	} @else {
+		overflow: auto;
+		-ms-overflow-style: -ms-autohiding-scrollbar;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	@if ($direction == vertical) {
+		overflow-x: hidden;
+		overflow-y: auto;
+	} @else if ($direction == horizontal) {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+}
+
+
+/**
+ * viewport()
+ * 
+ * Create a viewport by setting the height of an element to the window height
+ * and make it scrollable, allowing us to lock scrolling and zooming as needed
+ *
+ * @param {string} $scroll-direction - "vertical", "horizontal" or false (default, equivalent to "both")
+ */
+
+@mixin viewport($scroll-direction: false) {
+    @include scroll($scroll-direction);
+	
+	@at-root html { height: 100%; }
+
+	@at-root body,
+	& {
+		height: inherit;
+	}
 }
 
 
 /**
  * grayscale() 
  * 
- * Grayscale filter (uses a selector hack for IE 9, does not work in IE 10-11 and Edge)
+ * Grayscale filter (uses a selector hack for IE 9, does not work in IE 10/11 or Edge)
  */
 
 @mixin grayscale {
@@ -1448,23 +1512,4 @@ $bolts-easings:                                false !default;
 	@include state('detect-hover', false) {
 		@content;
 	}
-}
-
-
-/**
- * line-clamp() 
- * 
- * A line clamp mixin which truncates text at the selected number of lines.
- * The mixin needs to be set directly on the element containing the text.
- *
- * This mixin is not supported by IE 11 and Opera Mobile.
- */
-
- @mixin line-clamp( $rows: 0 ) {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	-o-text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: $rows;
-	-webkit-box-orient: vertical;
 }
