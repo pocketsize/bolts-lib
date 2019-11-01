@@ -23,21 +23,21 @@ const state = {
  * get
  *
  * @param {string} key
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  *
  * @return {(string|number|boolean|undefined)} - Value of targeted state or undefined
  */
 
 function get(key = null, node = false) {
-	let tempState = {}
+	let result = {}
 
 	if (!node) {
 		state._store.global.forEach(function(globalState) {
 			if (!key) {
-				tempState[globalState.key] = globalState.value
+				result[globalState.key] = globalState.value
 			} else {
 				if (globalState.key == key) {
-					tempState = globalState.value
+					result = globalState.value
 					return false
 				}
 			}
@@ -46,10 +46,10 @@ function get(key = null, node = false) {
 		state._store.local.forEach(function(nodeState) {
 			if (nodeState.node == node) {
 				if (!key) {
-					tempState[nodeState.key] = nodeState.value
+					result[nodeState.key] = nodeState.value
 				} else {
 					if (nodeState.key == key) {
-						tempState = nodeState.value
+						result = nodeState.value
 						return false
 					}
 				}
@@ -59,13 +59,16 @@ function get(key = null, node = false) {
 
 	if (
 		   !!key
-		&& typeof tempState === 'object'
-		&& Object.keys(tempState).length === 0
+		&& typeof result === 'object'
+		&& (
+			   result !== null
+			&& Object.keys(result).length === 0
+		)
 	) {
-		tempState = undefined
+		result = undefined
 	}
 
-	return tempState
+	return result
 }
 
 
@@ -74,7 +77,7 @@ function get(key = null, node = false) {
  *
  * @param {string} key
  * @param {(string|number|boolean)} value
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  * @param {boolean} setDOM - Attach the state as a data attribute in the DOM
  */
 
@@ -83,8 +86,9 @@ function set(key, value = true, node = false, setDOM = true) {
 		   typeof value != 'number'
 		&& typeof value != 'string'
 		&& typeof value != 'boolean'
+		&& value !== null
 	) {
-		throw new Error('state.set() — Parameter "value" must be a number, string or boolean.')
+		throw new Error('state.set: Argument "value" must be a number, string, boolean or null')
 	}
 
 	if (!!node) {
@@ -139,7 +143,7 @@ function set(key, value = true, node = false, setDOM = true) {
  * remove
  *
  * @param {string} key
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
 function remove(key, node = false) {
@@ -157,7 +161,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState(key, value, node)
+		setDOMState(key, false, node)
 	} else {
 		let i = state._store.global.length - 1
 
@@ -169,7 +173,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState(key, value)
+		setDOMState(key, false)
 	}
 
 	return
@@ -181,7 +185,7 @@ function remove(key, node = false) {
  *
  * @param {string} key
  * @param {(string|number|boolean|Array)} value
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
 function toggle(key, value = [true, false], node = false) {
@@ -200,11 +204,11 @@ function toggle(key, value = [true, false], node = false) {
 	if (value && Array.isArray(value)) {
 		value.forEach(val => {
 			if (typecheck(val) === false) {
-				throw new Error('state.toggle() — Unsupported type in passed array. Type must be number, string or boolean.')
+				throw new Error('state.toggle: Unsupported type in passed array. Type must be number, string or boolean')
 			}
 		})
 	} else if (value && typecheck(value) === false) {
-		throw new Error('state.toggle() — Parameter "value" must be a number, string, boolean, or an array containing values of these types.')
+		throw new Error('state.toggle: Parameter "value" must be a number, string, boolean, or an array containing values of these types')
 	}
 
 	if (!value) {
@@ -249,27 +253,25 @@ function toggle(key, value = [true, false], node = false) {
  * setDOMState
  * Render the current state as data-attributes on elements in the DOM
  *
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
 function setDOMState(key, value = false, node = false) {
 	if (!node) {
-		let html = document.getElementsByTagName('html')
+		node = document.documentElement
+	}
 
-		if (!html.length) {
-			throw new Error('setDOMState: Could not find html node')
-		}
-
-		node = html[0]
+	if (!(node instanceof HTMLElement)) {
+		throw new Error('state.setDOMState: Invalid value for argument "node", expected HTMLElement')
 	}
 	
 	if (!!value || value === 0) {
+		if (value === true) {
+			value = '';
+		}
+
 		node.setAttribute('data-bolts-state-' + key, value)
 	} else {
-		node.removeAttribute('data-bolts-state-' + key)
-	}
-
-	if (value === false) {
 		node.removeAttribute('data-bolts-state-' + key)
 	}
 }
@@ -278,7 +280,7 @@ function setDOMState(key, value = false, node = false) {
 /**
  * getDOMState
  *
- * Load a state._store data structure from all elements in the DOM
+ * Find states set in the DOM and load these into our state store
  */
 
 function getDOMState() {
@@ -318,7 +320,7 @@ function getDOMState() {
 		return states
 	}
 
-	let globalNode = document.getElementsByTagName('html')
+	let globalNode = document.documentElement
 
 	if (globalNode && globalNode.length) {
 		let globalNodeState = getNodeState(globalNode[0], false)
@@ -330,7 +332,7 @@ function getDOMState() {
 		}
 	}
 
-	let localNodes = document.querySelectorAll('*:not(html)')
+	let localNodes = document.documentElement.querySelectorAll('*')
 	localNodes = Array.prototype.slice.call(localNodes)
 
 	localNodes.forEach(function(node) {
