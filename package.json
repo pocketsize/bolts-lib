@@ -1,6 +1,6 @@
 {
 	"name": "bolts-lib",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Front-end helper library",
 	"main": "src/js/index.js",
 	"author": "Pocketsize <dev@pocketsize.se> (https://www.pocketsize.se)",

@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.4 | MIT License
+ * Bolts 1.0.5 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/
@@ -19,11 +19,11 @@ function init(config = {}) {
 
     config = Object.assign({}, defaults, config)
 
+    state.getDOMState()
+
     detect.hoverCapability(config.detectHoverThreshold)
     detect.imageOrientation()
     detect.resizeEvents()
-
-    state.getDOMState()
 }
 
 export default bolts

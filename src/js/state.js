@@ -1,5 +1,5 @@
 /**
- * Bolts 1.0.4 | MIT License
+ * Bolts 1.0.5 | MIT License
  *
  * Developed by Pocketsize
  * http://www.pocketsize.se/
@@ -23,21 +23,21 @@ const state = {
  * get
  *
  * @param {string} key
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  *
  * @return {(string|number|boolean|undefined)} - Value of targeted state or undefined
  */
 
 function get(key = null, node = false) {
-	let tempState = {}
+	let result = {}
 
 	if (!node) {
 		state._store.global.forEach(function(globalState) {
 			if (!key) {
-				tempState[globalState.key] = globalState.value
+				result[globalState.key] = globalState.value
 			} else {
 				if (globalState.key == key) {
-					tempState = globalState.value
+					result = globalState.value
 					return false
 				}
 			}
@@ -46,10 +46,10 @@ function get(key = null, node = false) {
 		state._store.local.forEach(function(nodeState) {
 			if (nodeState.node == node) {
 				if (!key) {
-					tempState[nodeState.key] = nodeState.value
+					result[nodeState.key] = nodeState.value
 				} else {
 					if (nodeState.key == key) {
-						tempState = nodeState.value
+						result = nodeState.value
 						return false
 					}
 				}
@@ -59,13 +59,16 @@ function get(key = null, node = false) {
 
 	if (
 		   !!key
-		&& typeof tempState === 'object'
-		&& Object.keys(tempState).length === 0
+		&& typeof result === 'object'
+		&& (
+			   result !== null
+			&& Object.keys(result).length === 0
+		)
 	) {
-		tempState = undefined
+		result = undefined
 	}
 
-	return tempState
+	return result
 }
 
 
@@ -74,16 +77,18 @@ function get(key = null, node = false) {
  *
  * @param {string} key
  * @param {(string|number|boolean)} value
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
+ * @param {boolean} setDOM - Attach the state as a data attribute in the DOM
  */
 
-function set(key, value = true, node = false) {
+function set(key, value = true, node = false, setDOM = true) {
 	if (
 		   typeof value != 'number'
 		&& typeof value != 'string'
 		&& typeof value != 'boolean'
+		&& value !== null
 	) {
-		throw new Error('state.set() — Parameter "value" must be a number, string or boolean.')
+		throw new Error('state.set: Argument "value" must be a number, string, boolean or null')
 	}
 
 	if (!!node) {
@@ -106,7 +111,9 @@ function set(key, value = true, node = false) {
 			node: node
 		})
 
-		setDOMState(node)
+		if (setDOM) {
+			setDOMState(key, value, node)
+		}
 	} else {
 		let i = state._store.global.length - 1
 
@@ -123,7 +130,9 @@ function set(key, value = true, node = false) {
 			value: value
 		})
 
-		setDOMState()
+		if (setDOM) {
+			setDOMState(key, value)
+		}
 	}
 
 	return
@@ -134,7 +143,7 @@ function set(key, value = true, node = false) {
  * remove
  *
  * @param {string} key
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
 function remove(key, node = false) {
@@ -152,7 +161,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState(node)
+		setDOMState(key, false, node)
 	} else {
 		let i = state._store.global.length - 1
 
@@ -164,7 +173,7 @@ function remove(key, node = false) {
 			i -= 1
 		}
 
-		setDOMState()
+		setDOMState(key, false)
 	}
 
 	return
@@ -176,7 +185,7 @@ function remove(key, node = false) {
  *
  * @param {string} key
  * @param {(string|number|boolean|Array)} value
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
 function toggle(key, value = [true, false], node = false) {
@@ -195,11 +204,11 @@ function toggle(key, value = [true, false], node = false) {
 	if (value && Array.isArray(value)) {
 		value.forEach(val => {
 			if (typecheck(val) === false) {
-				throw new Error('state.toggle() — Unsupported type in passed array. Type must be number, string or boolean.')
+				throw new Error('state.toggle: Unsupported type in passed array. Type must be number, string or boolean')
 			}
 		})
 	} else if (value && typecheck(value) === false) {
-		throw new Error('state.toggle() — Parameter "value" must be a number, string, boolean, or an array containing values of these types.')
+		throw new Error('state.toggle: Parameter "value" must be a number, string, boolean, or an array containing values of these types')
 	}
 
 	if (!value) {
@@ -244,63 +253,40 @@ function toggle(key, value = [true, false], node = false) {
  * setDOMState
  * Render the current state as data-attributes on elements in the DOM
  *
- * @param {Node} node - Defaults to HTML (global state) if not set
+ * @param {Node} node - Defaults to the root element (global state) if not set
  */
 
-function setDOMState(node = false) {
-	let states
-
-	if (!!node) {
-		states = []
-
-		state._store.local.forEach(function(state) {
-			if (state.node == node) {
-				states.push(state)
-			}
-		})
-	} else {
-		states = state._store.global
-		node = document.getElementsByTagName('html')[0]
+function setDOMState(key, value = false, node = false) {
+	if (!node) {
+		node = document.documentElement
 	}
 
-	let attributes = node.attributes
-
-	if (!!attributes) {
-		attributes = Array.prototype.slice.call(attributes)
-
-		attributes.forEach(function(attribute) {
-			if (attribute.nodeName.indexOf('data-bolts-state') === 0) {
-				node.removeAttribute(attribute.nodeName)
-			}
-		})
+	if (!(node instanceof HTMLElement)) {
+		throw new Error('state.setDOMState: Invalid value for argument "node", expected HTMLElement')
 	}
-
-	states.forEach(function(state) {
-		let attribute = state.key
-		let value = state.value
-
+	
+	if (!!value || value === 0) {
 		if (value === true) {
-			value = ''
+			value = '';
 		}
 
-		if (!!state.value || state.value === 0) {
-			node.setAttribute('data-bolts-state-' + attribute, value)
-		}
-	})
+		node.setAttribute('data-bolts-state-' + key, value)
+	} else {
+		node.removeAttribute('data-bolts-state-' + key)
+	}
 }
 
 
 /**
  * getDOMState
  *
- * Load a state._store data structure from all elements in the DOM
+ * Find states set in the DOM and load these into our state store
  */
 
 function getDOMState() {
-	let tempState = state._store
-
 	function getNodeState(node, returnNode = true) {
 		let attributes = node.attributes
+
 		if (!attributes) {
 			return false
 		}
@@ -334,30 +320,30 @@ function getDOMState() {
 		return states
 	}
 
-	let globalNode = document.getElementsByTagName('html')
+	let globalNode = document.documentElement
 
 	if (globalNode && globalNode.length) {
-		let globalDOMState = getNodeState(globalNode[0], false)
-		if (!globalDOMState) {
-			globalDOMState = []
-		}
+		let globalNodeState = getNodeState(globalNode[0], false)
 
-		globalDOMState.forEach(function(globalState) {
-			tempState.global = tempState.global.concat(globalState)
-		})
+		if (globalNodeState) {
+			globalNodeState.forEach(function(globalState) {
+				state.set(globalState.key, globalState.value, null, false)
+			})
+		}
 	}
 
-	let localNodes = document.querySelectorAll('*:not(html)')
+	let localNodes = document.documentElement.querySelectorAll('*')
 	localNodes = Array.prototype.slice.call(localNodes)
 
 	localNodes.forEach(function(node) {
 		let nodeState = getNodeState(node)
+
 		if (nodeState) {
-			tempState.local = tempState.local.concat(nodeState)
+			nodeState.forEach(function (localState) {
+				state.set(localState.key, localState.value, node, false)
+			})
 		}
 	})
-
-	state._store = tempState
 }
 
 export default state
