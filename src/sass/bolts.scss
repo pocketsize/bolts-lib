@@ -643,7 +643,7 @@ $bolts-easings:                                false !default;
 	@if ($attachment == false and $bolts-default-background-attachment) { $attachment: $bolts-default-background-attachment; }
 	@if ($color      == false and $bolts-default-background-color)      { $color:      $bolts-default-background-color; }
 
-	@if ($image)      { background-image:      url(#{$image}); }
+	@if ($image)      { background-image:      url('#{unquote($image)}'); }
 	@if ($position)   { background-position:   $position; }
 	@if ($size)       { background-size:       $size; }
 	@if ($repeat)     { background-repeat:     $repeat; }
