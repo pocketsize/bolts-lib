@@ -1,8 +1,8 @@
 /**
- * Bolts 1.0.5 | MIT License
+ * Bolts 1.0.6 | MIT License
  *
  * Developed by Pocketsize
- * http://www.pocketsize.se/
+ * https://pocketsize.se
  */
 
 import timing from './timing'

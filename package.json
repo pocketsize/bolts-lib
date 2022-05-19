@@ -1,10 +1,10 @@
 {
 	"name": "bolts-lib",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "Front-end helper library",
 	"main": "src/js/index.js",
-	"author": "Pocketsize <dev@pocketsize.se> (https://www.pocketsize.se)",
-	"homepage": "https://www.pocketsize.se",
+	"author": "Pocketsize <dev@pocketsize.se>",
+	"homepage": "https://pocketsize.se",
 	"license": "MIT",
 	"keywords": [
 		"bolts",
@@ -27,16 +27,12 @@
 	},
 	"contributors": [{
 		"name": "André Ekeberg",
-		"email": "andre@pocketsize.se",
+		"email": "hello@andreekeberg.se",
 		"url": "https://github.com/andreekeberg"
 	}, {
 		"name": "Björn Petersson",
-		"email": "bjorn@pocketsize.se",
+		"email": "me@bjornpetersson.com",
 		"url": "https://github.com/djurnamn"
-	}, {
-		"name": "Konstantin Ivanov",
-		"email": "konstantin@pocketsize.se",
-		"url": "https://github.com/mrtamagotchi"
 	}],
 	"dependencies": {}
 }

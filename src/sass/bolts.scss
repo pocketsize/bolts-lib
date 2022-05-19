@@ -1,13 +1,15 @@
 /**
- * Bolts 1.0.5 | MIT License
+ * Bolts 1.0.6 | MIT License
  *
  * Developed by Pocketsize
- * http://www.pocketsize.se/
+ * https://pocketsize.se
  */
 
 /***************************
  * Configuration variables *
  ***************************/
+
+@use "sass:math";
 
 $bolts-reset-focus-styles:                     false !default;
 $bolts-reset-list-styles:                      false !default;
@@ -98,7 +100,7 @@ $bolts-easings:                                false !default;
 		@if ($easing   == false) { $easing:   linear; }
 		@if ($delay    == false) { $delay:    0s; }
 		$transition: inspect($property $duration $easing);
-		@if (($delay / ($delay * 0 + 1)) != 0) { $transition: $transition + ' ' + $delay; }
+		@if (math.div($delay, $delay * 0 + 1) != 0) { $transition: $transition + ' ' + $delay; }
 	}
 	@return $transition;
 }
@@ -510,16 +512,16 @@ $bolts-easings:                                false !default;
 ) {
 	@if ($ratio == false and $bolts-default-responsive-font-size-ratio) { $ratio: $bolts-default-responsive-font-size-ratio; }
 	@if ($ratio == false) { @warn "responsive-font-size: $ratio needs to be passed if $bolts-default-responsive-font-size-ratio is not set."; }
-	$ratio: ($ratio / ($ratio * 0 + 1));
+	$ratio: math.div($ratio, $ratio * 0 + 1);
 	font-size: $ratio + vw;
 
 	@if ($min) {
-		$viewport-min: (100px / $ratio) * ($min / ($min * 0 + 1));
+		$viewport-min: math.div(100px, $ratio) * math.div($min, $min * 0 + 1);
 		@media (width-to($viewport-min)) { font-size: $min; }
 	}
 
 	@if ($max) {
-		$viewport-max: (100px / $ratio) * ($max / ($max * 0 + 1));
+		$viewport-max: math.div(100px, $ratio) * math.div($max, $max * 0 + 1);
 		@media (width-from($viewport-max)) { font-size: $max; }
 	}
 }
@@ -643,7 +645,7 @@ $bolts-easings:                                false !default;
 	@if ($attachment == false and $bolts-default-background-attachment) { $attachment: $bolts-default-background-attachment; }
 	@if ($color      == false and $bolts-default-background-color)      { $color:      $bolts-default-background-color; }
 
-	@if ($image)      { background-image:      url(#{$image}); }
+	@if ($image)      { background-image:      url('#{unquote($image)}'); }
 	@if ($position)   { background-position:   $position; }
 	@if ($size)       { background-size:       $size; }
 	@if ($repeat)     { background-repeat:     $repeat; }
@@ -765,7 +767,7 @@ $bolts-easings:                                false !default;
 		@if (_is-pseudo($pseudo)) { content: ''; }
 		display: block;
 		height: 0;
-		padding-bottom: (100% / $width) * $height;
+		padding-bottom: math.div(100%, $width) * $height;
 	}
 }
 
@@ -1004,7 +1006,7 @@ $bolts-easings:                                false !default;
 		@include inline-row($gutters, $font-size);
 
 		@for $item from 1 through $items {
-			$width: nth($columns, $item) / $column-count;
+			$width: math.div(nth($columns, $item), $column-count);
 
 			& > *:nth-child(#{$items}n + #{$item}) {
 				@include inline-column($width, $gutters);
@@ -1014,7 +1016,7 @@ $bolts-easings:                                false !default;
 		@include inline-row($gutters, $font-size);
 
 		@if (type-of($columns) == number) {
-			$width: 1 / $columns
+			$width: math.div(1, $columns)
 		}
 
 		> * {
@@ -1145,7 +1147,7 @@ $bolts-easings:                                false !default;
 		}
 
 		> * {
-			@include flex-column(1 / $columns, $gutters);
+			@include flex-column(math.div(1, $columns), $gutters);
 		}
 	} @else if (type-of($columns) == list and $items > 1) {
 		$column-count: 0;
@@ -1157,7 +1159,7 @@ $bolts-easings:                                false !default;
 		@include flex-row($gutters);
 
 		@for $item from 1 through $items {
-			$width: nth($columns, $item) / $column-count;
+			$width: math.div(nth($columns, $item), $column-count);
 
 			& > *:nth-child(#{$items}n + #{$item}) {
 				@include flex-column($width, $gutters);
@@ -1253,15 +1255,15 @@ $bolts-easings:                                false !default;
 	@if ($min == false and $bolts-default-auto-col-min) { $min: $bolts-default-auto-col-min; }
 	@if ($max == false and $bolts-default-auto-col-max) { $max: $bolts-default-auto-col-max; }
 	@if ($min == false or $max == false) { @warn "auto-col: $min and $max need to be passed if $bolts-default-auto-col-min and $bolts-default-auto-col-max are not set."; }
-	$max-width: (100% / $min);
-	$min-width: (100% / $max);
+	$max-width: math.div(100%, $min);
+	$min-width: math.div(100%, $max);
 	width: $min-width;
 
 	@if ($min != $max) {
 		@for $i from $max - 1 through 1 {
 			&:nth-last-of-type(#{$i}):first-of-type,
 			&:nth-last-of-type(#{$i}):first-of-type ~ #{$selector} {
-				$width: (100% / $i);
+				$width: math.div(100%, $i);
 				@if ($i < $min) { $width: $max-width; }
 				width: $width;
 			}

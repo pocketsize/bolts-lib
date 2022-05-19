@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2022-05-19
+### Changed
+- SCSS: Migrated deprecated / for division outside of calc()
+
 ## [1.0.5] - 2019-11-01
 ### Added
 - SCSS: Added viewport mixin
@@ -40,6 +44,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - JS: Removed references to not yet implemeted methods in state
 
+[1.0.6]: https://github.com/pocketsize/bolts-lib/releases/tag/1.0.6
 [1.0.5]: https://github.com/pocketsize/bolts-lib/releases/tag/1.0.5
 [1.0.4]: https://github.com/pocketsize/bolts-lib/releases/tag/1.0.4
 [1.0.3]: https://github.com/pocketsize/bolts-lib/releases/tag/1.0.3
