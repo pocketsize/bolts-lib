@@ -1,5 +1,6 @@
 # Bolts 
-*1.0.5*
+
+[![Version](https://img.shields.io/npm/v/bolts-lib)](https://www.npmjs.com/package/bolts-lib) [![Total Downloads](https://img.shields.io/npm/dt/bolts-lib)](https://www.npmjs.com/package/bolts-lib) [![License](https://img.shields.io/npm/l/bolts-lib)](https://www.npmjs.com/package/bolts-lib)
 
 Bolts is a front-end helper library, consisting of practical Sass mixins and functions, along with a collection of JavaScript functions, helping you deal with all the mundane website building and styling tasks, so that you can focus on creating something new. It aims to be a toolkit that takes care of the things you're tired of doing.
 
