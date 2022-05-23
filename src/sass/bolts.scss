@@ -284,6 +284,7 @@ $bolts-easings:                                false !default;
 		margin: 0;
 		text-decoration: none;
 		border-radius: 0;
+		outline-offset: -1px;
 
 		&, &:before, &:after {
 			box-sizing: border-box;
